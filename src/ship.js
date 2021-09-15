@@ -15,8 +15,7 @@ const ShipFactory = (length, orientation) => ({
     }
 });
 
-const ship = ShipFactory(1, 'horizontal');
-console.log(ship);
+
 
 
 export default ShipFactory
