@@ -1,6 +1,7 @@
 const ShipFactory = (length, orientation) => ({
     length,
     orientation,
+    coordinates : [],
     hit : (position) => {
         return `${position} hit`
     },

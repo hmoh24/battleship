@@ -1,3 +1,4 @@
+import Gameboard from '../gameboard.js';
 import ShipFactory from '../ship.js';
 
 test('Ship has length', () => {
@@ -39,3 +40,14 @@ test('Ship can calculate if NOT sunk', () => {
   const hitPositions = 1
   expect(ship.isSunk(hitPositions)).toBe(false);
 });
+
+test('Ship has coordinates', () => {
+  const ship = ShipFactory(3, 'vertical');
+  expect(ship.coordinates).toBeDefined();
+})
+
+test('Ship coordinates same as Gameboard calculated coordinates', () => {
+  const ship = ShipFactory(3, 'horizontal');
+  ship.coordinates = (Gameboard().place(11, ship));
+  expect(ship.coordinates).toEqual(Gameboard().place(11, ship));
+})
