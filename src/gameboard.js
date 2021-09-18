@@ -1,7 +1,7 @@
 import ShipFactory from './ship.js'
 
-const Gameboard = () => ({
-    place : (coordinate, ship) => {
+const Gameboard = (() => {
+    let placeShip = (coordinate, ship) => {
         let returnedCoordinates = [];
         function createPlacedCoord(min, max, factor, array){
             for (let i=min; i<max; i+=factor){
@@ -17,19 +17,24 @@ const Gameboard = () => ({
             createPlacedCoord(coordinate, finalCoordinate, 10, returnedCoordinates);
         };
         return returnedCoordinates;
-    },
-    recieveAttack : (coordinates) => {
-        // Object.defineProperty(Gameboard(), "missedAttack", {
-        //     get : function () { return missedAttack; },
-        //     set : function(coorindates) { missedAttack.push(coordinates)}
-        // })
-        Gameboard().missedAttack[(Gameboard().missedAttack).length] = coordinates;
-        console.log(Gameboard().missedAttack);
-        return coordinates;
-    },
-    missedAttack : [],
+    };
+    let missedAttacks = [];
+    const setMissedAttacks = (coordinates) => {
+        missedAttacks.push(coordinates);
+    };
+    const getMissedAttacks = () => {
+        return missedAttacks
+    };
+    return {
+        placeShip,
+        getMissedAttacks,
+        setMissedAttacks
+    }
+})();
 
-});
-
+Gameboard.placeShip(11, 11);
+Gameboard.setMissedAttacks(55);
+Gameboard.setMissedAttacks(23);
+console.log((Gameboard.getMissedAttacks()));
 
 export default Gameboard
