@@ -32,9 +32,6 @@ const Gameboard = (() => {
     }
 })();
 
-Gameboard.placeShip(11, 11);
-Gameboard.setMissedAttacks(55);
-Gameboard.setMissedAttacks(23);
-console.log((Gameboard.getMissedAttacks()));
+
 
 export default Gameboard

@@ -48,7 +48,7 @@ test('Ship has coordinates', () => {
   expect(ship.coordinates).toBeDefined();
 });
 
-test.only('Ship coordinates same as Gameboard calculated coordinates', () => {
+test('Ship coordinates same as Gameboard calculated coordinates', () => {
   const ship = ShipFactory(3, 'horizontal');
   ship.coordinates = Gameboard.placeShip(11, ship);
   expect(ship.coordinates).toEqual(Gameboard.placeShip(11, ship));

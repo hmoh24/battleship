@@ -21,7 +21,7 @@ test('Gameboard producing correct place coordinates HORIZONTAL 1', () => {
     expect(Gameboard.placeShip(11, ship).length).toBe(2);
   });
 
-test('Gameboard producing correct place coordinates HORIZONTAL 1', () => {
+test('Gameboard producing correct place coordinates HORIZONTAL 2', () => {
     const ship = ShipFactory(4, 'horizontal');
     expect(Gameboard.placeShip(51, ship)).toContain(51);
     expect(Gameboard.placeShip(51, ship)).toContain(52);
@@ -45,24 +45,20 @@ test('Gameboard producing correct place coordinates VERTICAL 2', () => {
     expect(Gameboard.placeShip(25, ship).length).toBe(3);
   });
 
-test('Gameboard recieve attack is defined', () => {
+test('Gameboard missed attack gettter is defined', () => {
     const ship = ShipFactory(3, 'vertical');
     Gameboard.placeShip(11, ship);
     expect(Gameboard.getMissedAttacks(11)).toBeDefined();
   });
 
-test('Gameboard has storage array for missed attacks', () => {
+test('Gameboard missed attack setter and getter producing right values', () => {
     const ship = ShipFactory(3, 'vertical');
     Gameboard.placeShip(11, ship);
-    Gameboard.setMissedAttacks(11)
-    expect(Gameboard.getMissedAttacks()).toBeDefined();
-  });
-
-test('Gameboard is storing missed attacks', () => {
-    const ship = ShipFactory(3, 'vertical');
-    Gameboard.placeShip(11, ship);
-    Gameboard.setMissedAttacks(55);
-    Gameboard.setMissedAttacks(23);
-    expect(Gameboard.getMissedAttacks()).toBe(2);
+    Gameboard.setMissedAttacks(21);
+    Gameboard.setMissedAttacks(22);
+    expect(Gameboard.getMissedAttacks()).toContain(21);
+    expect(Gameboard.getMissedAttacks()).toContain(22);
+    expect(Gameboard.getMissedAttacks().length).toBe(2);
   });
 });
+
