@@ -37,6 +37,50 @@ test('Instantiate a destroyer', () => {
 
 test('Error with invalid type', ()=> {
     expect(()=>{new Ship('x')}).toThrow('Invalid Ship Type')
+    expect(()=>{new Ship('carrir')}).toThrow('Invalid Ship Type')
+    expect(()=>{new Ship()}).toThrow('Invalid Ship Type')
+    expect(()=>{new Ship(0)}).toThrow('Invalid Ship Type')
 })
 
 });
+
+describe('Ship hit and sink:', ()=>{
+    test('Ship is not sunk on creation', ()=>{
+        let carrier  = new Ship('Carrier')
+        let destroyer = new Ship('Destroyer')
+        let cruiser = new Ship('Cruiser')
+
+        expect(carrier.isSunk()).toBe(false)
+        expect(destroyer.isSunk()).toBe(false)
+        expect(cruiser.isSunk()).toBe(false)
+    })
+
+    test('Ship sinks after sufficient hits', ()=>{
+        let destroyer = new Ship('Destroyer')
+        destroyer.hit()
+        destroyer.hit()
+        expect(destroyer.isSunk()).toBe(true)
+
+        let carrier  = new Ship('Carrier')
+        carrier.hit()
+        carrier.hit()
+        carrier.hit()
+        carrier.hit()
+        carrier.hit()
+        expect(carrier.isSunk()).toBe(true)
+    })
+
+    test('Hits on sunk ships throws error message', ()=>{
+        let destroyer = new Ship('Destroyer')
+        destroyer.hit()
+        destroyer.hit()
+        expect(()=>{destroyer.hit()}).toThrow('Ship has already sunk.')
+
+        let submarine = new Ship('Submarine')
+        submarine.hit()
+        submarine.hit()
+        submarine.hit()
+        expect(()=>{submarine.hit()}).toThrow('Ship has already sunk.')
+
+    })
+})

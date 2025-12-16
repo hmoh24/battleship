@@ -21,16 +21,25 @@ class Ship{
             length: 2
         }
     };
-
-    static #shipTypes = Object.keys(this.#shipMap)
+    static #shipTypes = Object.keys(this.#shipMap);
+    #hits
 
     constructor(type){
         if(!Ship.#shipTypes.includes(type)) throw new Error('Invalid Ship Type')
         this.name = Ship.#shipMap[type].name
         this.length = Ship.#shipMap[type].length
+        this.#hits = 0;
+    }
+
+    isSunk(){
+        return this.#hits >= this.length
+    }
+
+    hit(){
+        if (this.isSunk()) throw new Error('Ship has already sunk.')
+        this.#hits++
     }
 }
 
 export default Ship
 
-console.log(Ship.shipTypes)
