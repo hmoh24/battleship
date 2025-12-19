@@ -1,6 +1,18 @@
 class Gameboard {
   constructor() {}
 
+  #coordinatesMatrix = Array.from({ length: 10 }, () =>
+    Array.from({ length: 10 }, () => 0)
+  );
+
+  static #shipCodes = {
+    Carrier: 1,
+    Battleship: 2,
+    Cruiser: 3,
+    Submarine: 4,
+    Destroyer: 5,
+  };
+
   static #contiguousCoordinatesChecker(coordinatesArray) {
     let contiguousHorizontal = true;
     let contiguousVertical = true;
@@ -28,7 +40,6 @@ class Gameboard {
 
   place(ship, coordinatesArray) {
     //can instantiate ships here if necessary instead of passing them in
-    //can then check
     if (
       coordinatesArray.some((coordinate) => {
         return !Gameboard.#coordinateWithinBounds(coordinate);
@@ -41,6 +52,17 @@ class Gameboard {
       );
     if (!Gameboard.#contiguousCoordinatesChecker(coordinatesArray))
       throw new Error("Ship coordinates are not contiguous");
+    if (
+      coordinatesArray.some((coordinate) => {
+        return this.#coordinatesMatrix[coordinate[1]][coordinate[0]] !== 0;
+      })
+    )
+      throw new Error('Cannot place ship where ship is already placed"');
+
+    coordinatesArray.forEach((coordinate) => {
+      this.#coordinatesMatrix[coordinate[1]][coordinate[0]] =
+        Gameboard.#shipCodes[ship.name];
+    });
     return true;
   }
 
@@ -57,3 +79,5 @@ export default Gameboard;
 //this method is good because lookup is 0[1]
 
 //simple method best for first pass, get it working
+const board = new Gameboard();
+console.log();
