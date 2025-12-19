@@ -5,6 +5,9 @@ class Gameboard {
     Array.from({ length: 10 }, () => 0)
   );
 
+  #previousAttacks = new Set();
+  #shipsPlaced = new Map();
+
   static #shipCodes = {
     Carrier: 1,
     Battleship: 2,
@@ -12,6 +15,13 @@ class Gameboard {
     Submarine: 4,
     Destroyer: 5,
   };
+
+  static #getShipNameByCode(code) {
+    const codes = Object.entries(Gameboard.#shipCodes);
+    for (const [key, val] of codes) {
+      if (code === val) return key;
+    }
+  }
 
   static #contiguousCoordinatesChecker(coordinatesArray) {
     let contiguousHorizontal = true;
@@ -31,7 +41,6 @@ class Gameboard {
     return contiguousHorizontal || contiguousVertical;
   }
 
-  //single coordinate check to reuse between shots and placing
   static #coordinateWithinBounds(coordinate) {
     let x = coordinate[0] >= 0 && coordinate[0] <= 9;
     let y = coordinate[1] >= 0 && coordinate[1] <= 9;
@@ -58,18 +67,51 @@ class Gameboard {
       })
     )
       throw new Error('Cannot place ship where ship is already placed"');
-
+    if (this.#shipsPlaced.has(ship.name))
+      throw new Error(
+        `Cannot place second ship of any type. Issue found with ${ship.name}`
+      );
     coordinatesArray.forEach((coordinate) => {
       this.#coordinatesMatrix[coordinate[1]][coordinate[0]] =
         Gameboard.#shipCodes[ship.name];
     });
+    this.#shipsPlaced.set(ship.name, ship);
     return true;
   }
 
-  receiveAttack() {
-    //check if valid coordinates first
-    //Keep list of attacks, only accept if it hasnt been done before - private property
-    //
+  receiveAttack(coordinatesArray) {
+    if (!Gameboard.#coordinateWithinBounds(coordinatesArray))
+      throw new Error("Attack out of bounds");
+    if (this.#previousAttacks.has(coordinatesArray.toString()))
+      throw new Error("Cannot make an attack on the previously hit tile.");
+
+    const shipCode =
+      this.#coordinatesMatrix[coordinatesArray[1]][coordinatesArray[0]];
+    this.#previousAttacks.add(coordinatesArray.toString());
+
+    if (shipCode !== 0) {
+      const ship = this.#shipsPlaced.get(
+        Gameboard.#getShipNameByCode(shipCode)
+      );
+      ship.hit();
+      return "Successful hit!";
+    } else {
+      return "Missed!";
+    }
+  }
+
+  get previousAttacks() {
+    //store the array, make comparison with .tostring, so that on the DOM we can use it to highlight the right tiles.
+    return [...this.#previousAttacks].join("-").toString();
+  }
+
+  allShipsSunk() {
+    if (this.#shipsPlaced.size === 0) return false;
+    for (const ship of this.#shipsPlaced.values()) {
+      console.log("ships:", ship, ship.isSunk());
+      if (ship.isSunk() === false) return false;
+    }
+    return true;
   }
 }
 
@@ -80,4 +122,3 @@ export default Gameboard;
 
 //simple method best for first pass, get it working
 const board = new Gameboard();
-console.log();
