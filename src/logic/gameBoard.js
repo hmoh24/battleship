@@ -108,7 +108,6 @@ class Gameboard {
   allShipsSunk() {
     if (this.#shipsPlaced.size === 0) return false;
     for (const ship of this.#shipsPlaced.values()) {
-      console.log("ships:", ship, ship.isSunk());
       if (ship.isSunk() === false) return false;
     }
     return true;
