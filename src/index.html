@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Battleship!</title>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="title">
+        <span class="eyebrow">Naval Strategy</span>
+        <h1>Battleship</h1>
+      </div>
+      <div class="meta">
+        <p>Plot your fleet, hunt the horizon, and play the long game.</p>
+        <div class="pill">Phase: Setup</div>
+      </div>
+    </header>
+
+    <section class="info">
+      <div class="card">
+        <h2>Objective</h2>
+        <p>Sink all enemy ships before they sink yours.</p>
+      </div>
+      <div class="card">
+        <h2>Status</h2>
+        <p>Waiting for placements.</p>
+      </div>
+      <div class="card tip-card">
+        <h2>Tip</h2>
+        <p>Vary spacing to dodge easy patterns.</p>
+      </div>
+    </section>
+
+    <main class="boards">
+      <section class="board-shell">
+        <h3>Your Fleet</h3>
+        <div class="board" aria-label="Player gameboard"></div>
+      </section>
+      <section class="board-shell">
+        <h3>Enemy Waters</h3>
+        <div class="board" aria-label="Opponent gameboard"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="hint">Controls will live here later.</div>
+      <button class="ghost" type="button">Reset Board</button>
+    </footer>
+  </div>
+</body>
+</html>
