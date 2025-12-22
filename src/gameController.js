@@ -1,6 +1,7 @@
-import Ship from "./logic/ship";
-import Gameboard from "./logic/gameBoard";
-import Player from "./logic/player";
+import Ship from "./logic/ship.js";
+import Gameboard from "./logic/gameBoard.js";
+import Player from "./logic/player.js";
+import shipColors from "./assets/ships.js";
 
 let firstPlayer = new Player("Human", "Bob");
 let secondPlayer = new Player("Human", "Jim");
@@ -76,3 +77,39 @@ const placeInitialShips = () => {
   ]);
 };
 placeInitialShips();
+
+const boardElements = [...document.getElementsByClassName("board")];
+boardElements.forEach((div, index) => {
+  let player = index === 0 ? firstPlayer : secondPlayer;
+  for (let i = 0; i < 100; i++) {
+    let gridSquare = document.createElement("div");
+    gridSquare.className = "gridSquare";
+    div.appendChild(gridSquare);
+    let code = player.gameboard.boardMatrix[i];
+    let colour;
+    switch (code) {
+      case 0:
+        colour = "transparent";
+        break;
+      case 1:
+        colour = shipColors.Carrier;
+        break;
+      case 2:
+        colour = shipColors.Battleship;
+        break;
+      case 3:
+        colour = shipColors.Cruiser;
+        break;
+      case 4:
+        colour = shipColors.Submarine;
+        break;
+      case 5:
+        colour = shipColors.Destroyer;
+        break;
+      default:
+        colour = "transparent";
+        break;
+    }
+    gridSquare.style.backgroundColor = colour;
+  }
+});

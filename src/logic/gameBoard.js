@@ -112,6 +112,11 @@ class Gameboard {
     }
     return true;
   }
+
+  //remove after functionality for placing ships
+  get boardMatrix() {
+    return this.#coordinatesMatrix.flat();
+  }
 }
 
 export default Gameboard;
