@@ -83,7 +83,8 @@ boardElements.forEach((div, index) => {
   let player = index === 0 ? firstPlayer : secondPlayer;
   for (let i = 0; i < 100; i++) {
     let gridSquare = document.createElement("div");
-    gridSquare.className = "gridSquare";
+    gridSquare.classList.add("gridSquare", "gridHover");
+    gridSquare.setAttribute("coord", `${Math.floor(i / 10)}${i % 10}`);
     div.appendChild(gridSquare);
     let code = player.gameboard.boardMatrix[i];
     let colour;
@@ -113,3 +114,46 @@ boardElements.forEach((div, index) => {
     gridSquare.style.backgroundColor = colour;
   }
 });
+
+//Set state after ships have been placed to prepare for rounds. Player 1 starts first
+let gameState = "Player 1 turn";
+const boardContainer = document.getElementsByClassName("boards")[0];
+const [board1, board2] = boardElements;
+const board1Grids = [...board1.childNodes].filter((element) => {
+  return element.classList.contains("gridSquare");
+});
+const board2Grids = [...board2.childNodes].filter((element) => {
+  return element.classList.contains("gridSquare");
+});
+
+boardContainer.addEventListener("click", (e) => {
+  const [board1, board2] = boardElements;
+  const board1Grids = [...board1.childNodes].filter((element) => {
+    return element.classList.contains("gridSquare");
+  });
+  const board2Grids = [...board2.childNodes].filter((element) => {
+    return element.classList.contains("gridSquare");
+  });
+  if (gameState === "Not Started") {
+    if (e.target.closest[".board"] === board1) {
+      e.preventDefault();
+      board1Grids.forEach((element) => {
+        element.classList.toggle("gridHover");
+      });
+    }
+    if (e.target.closest[".board"] === board2) {
+    }
+  }
+});
+
+//render function to loop through the gameboard state and display the correct info
+//parameter to show ships or no
+//hits should be shown regardless
+//parameter to disable clicks on own board/hover to prevent attacks on own ship.
+
+//render function to show page between attacks, including switch over on placing ships
+
+//event listener -> check who's turn it is, and keep track of it.
+//click then switches turn and renders in between page
+//clicking next turn renders page for next player's turn
+//core loop, start and ending conditions can be done after.
