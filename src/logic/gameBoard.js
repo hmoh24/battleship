@@ -93,9 +93,13 @@ class Gameboard {
       const ship = this.#shipsPlaced.get(
         Gameboard.#getShipNameByCode(shipCode)
       );
+      //set matrix code to 9 when hit to set red colour
+      this.#coordinatesMatrix[coordinatesArray[1]][coordinatesArray[0]] = 9;
       ship.hit();
       return "Successful hit!";
     } else {
+      //set matrix code to 8 when miss to set black colour
+      this.#coordinatesMatrix[coordinatesArray[1]][coordinatesArray[0]] = 8;
       return "Missed!";
     }
   }

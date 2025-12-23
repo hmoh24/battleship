@@ -1,7 +1,7 @@
 import Ship from "./logic/ship.js";
 import Gameboard from "./logic/gameBoard.js";
 import Player from "./logic/player.js";
-import shipColors from "./assets/ships.js";
+import render from "./render/render.js";
 
 let firstPlayer = new Player("Human", "Bob");
 let secondPlayer = new Player("Human", "Jim");
@@ -79,81 +79,88 @@ const placeInitialShips = () => {
 placeInitialShips();
 
 const boardElements = [...document.getElementsByClassName("board")];
+const [player1Board, player2Board] = boardElements;
 boardElements.forEach((div, index) => {
-  let player = index === 0 ? firstPlayer : secondPlayer;
   for (let i = 0; i < 100; i++) {
     let gridSquare = document.createElement("div");
     gridSquare.classList.add("gridSquare", "gridHover");
-    gridSquare.setAttribute("coord", `${Math.floor(i / 10)}${i % 10}`);
+    gridSquare.setAttribute("data-coord", `${i % 10}${Math.floor(i / 10)}`);
     div.appendChild(gridSquare);
-    let code = player.gameboard.boardMatrix[i];
-    let colour;
-    switch (code) {
-      case 0:
-        colour = "transparent";
-        break;
-      case 1:
-        colour = shipColors.Carrier;
-        break;
-      case 2:
-        colour = shipColors.Battleship;
-        break;
-      case 3:
-        colour = shipColors.Cruiser;
-        break;
-      case 4:
-        colour = shipColors.Submarine;
-        break;
-      case 5:
-        colour = shipColors.Destroyer;
-        break;
-      default:
-        colour = "transparent";
-        break;
-    }
-    gridSquare.style.backgroundColor = colour;
   }
 });
 
-//Set state after ships have been placed to prepare for rounds. Player 1 starts first
-let gameState = "Player 1 turn";
+//Initialise
+let gameState = "Player 1 Turn";
+render(player1Board, firstPlayer, false, true);
+render(player2Board, secondPlayer, true, false);
+
+//OPTIMISATION - make a map to handle event handler logic cleanly
+// let turnLogic = {
+//   player1: {
+//     boardRender: [
+//       render(player1Board, firstPlayer, false, true),
+//       render(player2Board, secondPlayer, true, false),
+//     ],
+//   },
+// };
+
 const boardContainer = document.getElementsByClassName("boards")[0];
-const [board1, board2] = boardElements;
-const board1Grids = [...board1.childNodes].filter((element) => {
-  return element.classList.contains("gridSquare");
-});
-const board2Grids = [...board2.childNodes].filter((element) => {
-  return element.classList.contains("gridSquare");
-});
-
 boardContainer.addEventListener("click", (e) => {
-  const [board1, board2] = boardElements;
-  const board1Grids = [...board1.childNodes].filter((element) => {
-    return element.classList.contains("gridSquare");
-  });
-  const board2Grids = [...board2.childNodes].filter((element) => {
-    return element.classList.contains("gridSquare");
-  });
-  if (gameState === "Not Started") {
-    if (e.target.closest[".board"] === board1) {
-      e.preventDefault();
-      board1Grids.forEach((element) => {
-        element.classList.toggle("gridHover");
-      });
+  console.log("State: ", gameState);
+  if (gameState === "Switch 1-2" || gameState === "Switch 2-1") {
+    //none
+  } else if (gameState === "Player 1 Turn") {
+    if (
+      e.target.closest(".board") === player2Board &&
+      e.target.classList.contains("gridSquare")
+    ) {
+      const coordStringArray = e.target.dataset["coord"].split("");
+      const coordNumericArray = coordStringArray.map(Number);
+      let resultString =
+        secondPlayer.gameboard.receiveAttack(coordNumericArray);
+      console.log(resultString);
+      render(player2Board, secondPlayer, false, false);
+      gameState = "Switch 1-2";
     }
-    if (e.target.closest[".board"] === board2) {
+  } else if (gameState === "Player 2 Turn") {
+    if (
+      e.target.closest(".board") === player1Board &&
+      e.target.classList.contains("gridSquare")
+    ) {
+      const coordStringArray = e.target.dataset["coord"].split("");
+      const coordNumericArray = coordStringArray.map(Number);
+      let resultString = firstPlayer.gameboard.receiveAttack(coordNumericArray);
+      console.log(resultString);
+      render(player1Board, firstPlayer, false, false);
+      gameState = "Switch 2-1";
     }
   }
 });
 
-//render function to loop through the gameboard state and display the correct info
-//parameter to show ships or no
-//hits should be shown regardless
-//parameter to disable clicks on own board/hover to prevent attacks on own ship.
-
-//render function to show page between attacks, including switch over on placing ships
-
-//event listener -> check who's turn it is, and keep track of it.
-//click then switches turn and renders in between page
-//clicking next turn renders page for next player's turn
-//core loop, start and ending conditions can be done after.
+const footer = document.getElementsByClassName("footer")[0];
+const [displayBtn, switchBtn] = document.getElementsByClassName("ghost");
+footer.addEventListener("click", (e) => {
+  console.log("State: ", gameState);
+  if (
+    e.target === switchBtn &&
+    (gameState === "Switch 1-2" || gameState === "Switch 2-1")
+  ) {
+    render(player1Board, firstPlayer, false, false);
+    render(player2Board, secondPlayer, false, false);
+    gameState = gameState === "Switch 1-2" ? "Display 1-2" : "Display 2-1";
+  }
+  if (e.target === displayBtn) {
+    if (gameState === "Display 1-2") {
+      render(player1Board, firstPlayer, true, false);
+      render(player2Board, secondPlayer, false, true);
+      gameState = "Player 2 Turn";
+      console.log("after click", gameState);
+    }
+    if (gameState === "Display 2-1") {
+      render(player1Board, firstPlayer, false, true);
+      render(player2Board, secondPlayer, true, false);
+      gameState = "Player 1 Turn";
+      console.log("after click", gameState);
+    }
+  }
+});
