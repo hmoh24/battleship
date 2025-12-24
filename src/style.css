@@ -12,6 +12,18 @@
   --accent: #6fe3ff;
   --accent-strong: #5aa2ff;
   --glow: rgba(111, 227, 255, 0.18);
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 28px;
+  --space-6: 36px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-xxl: 40px;
 }
 
 html,
@@ -30,10 +42,10 @@ body {
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 20px 48px;
+  padding: var(--space-6) var(--space-4) 48px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--space-5);
   position: relative;
 }
 
@@ -64,8 +76,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 20px;
-  padding: 26px 28px;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
   background: var(--surface);
   border-radius: 24px;
   box-shadow: 10px 10px 20px var(--shadow-dark),
@@ -77,14 +89,14 @@ body {
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 3px;
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--muted);
   display: inline-block;
   margin-bottom: 6px;
 }
 
 .title h1 {
-  font-size: 42px;
+  font-size: var(--text-xxl);
   margin: 0;
   letter-spacing: 1px;
 }
@@ -95,19 +107,20 @@ body {
 }
 
 .meta p {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-2);
   color: var(--muted);
   line-height: 1.4;
+  font-size: var(--text-sm);
 }
 
 .pill {
   display: inline-flex;
-  padding: 6px 14px;
+  padding: 6px var(--space-2);
   border-radius: 999px;
   background: linear-gradient(145deg, var(--accent), var(--accent-strong));
   color: #0f1724;
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--text-xs);
   letter-spacing: 0.4px;
 }
 
@@ -120,14 +133,14 @@ body {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px;
+  padding: var(--space-5);
   border-radius: 26px;
   background: var(--surface);
   box-shadow: 12px 12px 24px var(--shadow-dark),
     -12px -12px 24px var(--shadow-light),
     0 0 0 1px rgba(255, 255, 255, 0.03);
   display: grid;
-  gap: 26px;
+  gap: var(--space-4);
   animation: fadeInUp 500ms ease-out;
   position: relative;
   overflow: hidden;
@@ -151,24 +164,25 @@ body {
 }
 
 .startIntro h2 {
-  margin: 8px 0 6px;
-  font-size: 24px;
+  margin: var(--space-1) 0 6px;
+  font-size: var(--text-xl);
 }
 
 .startIntro p {
   margin: 0;
   color: var(--muted);
+  font-size: var(--text-sm);
 }
 
 .modeSelect {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  gap: var(--space-3);
 }
 
 .modeButton {
   border: none;
-  padding: 12px 16px;
+  padding: var(--space-2) var(--space-3);
   border-radius: 16px;
   background: linear-gradient(135deg, #5aa2ff, #6fe3ff);
   color: #0f1724;
@@ -178,7 +192,7 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  font-size: 12px;
+  font-size: var(--text-xs);
   cursor: pointer;
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
@@ -203,14 +217,14 @@ body {
 .nameInputs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  gap: var(--space-3);
 }
 
 .inputGroup {
   display: grid;
-  gap: 8px;
+  gap: var(--space-1);
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -218,7 +232,7 @@ body {
 .nameInput {
   width: 100%;
   border: none;
-  padding: 12px 14px;
+  padding: var(--space-2) var(--space-3);
   border-radius: 14px;
   background: #101827;
   color: var(--ink);
@@ -234,7 +248,7 @@ body {
   justify-self: center;
   min-width: 220px;
   border: none;
-  padding: 12px 22px;
+  padding: var(--space-2) 22px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #0f1724;
@@ -257,11 +271,12 @@ body {
 .info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 18px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .card {
-  padding: 14px 16px;
+  padding: var(--space-3) var(--space-3);
   border-radius: 20px;
   background: var(--surface);
   box-shadow: inset 6px 6px 12px var(--shadow-dark),
@@ -280,24 +295,45 @@ body {
 
 .card h2 {
   margin: 0 0 8px;
-  font-size: 14px;
+  font-size: var(--text-md);
 }
 
 .card p {
   margin: 0;
   color: var(--muted);
   line-height: 1.35;
-  font-size: 13px;
+  font-size: var(--text-sm);
+}
+
+.instruction-card {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.instruction-card .instruction-text {
+  color: var(--muted);
+}
+
+.instruction-card .inputGroup {
+  text-transform: none;
+  letter-spacing: 0.4px;
+}
+
+.instruction-card .controlButton {
+  width: 100%;
+  justify-self: start;
 }
 
 .boards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
 .board-shell {
-  padding: 22px;
+  padding: var(--space-4);
   border-radius: 24px;
   background: var(--surface);
   box-shadow: 12px 12px 22px var(--shadow-dark),
@@ -308,7 +344,7 @@ body {
 
 .board-shell h3 {
   margin: 0 0 16px;
-  font-size: 18px;
+  font-size: var(--text-lg);
   color: var(--ink);
 }
 
@@ -342,9 +378,9 @@ body {
 .footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4);
   border-radius: 20px;
   background: var(--surface);
   box-shadow: inset 6px 6px 12px var(--shadow-dark),
@@ -352,29 +388,59 @@ body {
     0 0 18px var(--glow);
 }
 
-.hint {
-  color: var(--muted);
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 720px;
 }
 
-.ghost {
+.controlButton {
   border: none;
-  padding: 10px 18px;
-  border-radius: 999px;
-  background: goldenrod;
-  color: var(--ink);
-  box-shadow: 6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light),
-    0 0 12px var(--glow);
-  font-weight: 600;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #1a6f6a, #0f4c47);
+  color: #f3fffe;
+  box-shadow: 0 8px 16px rgba(5, 9, 17, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.4);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease, color 150ms ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.ghost:hover {
+.controlButton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(111, 227, 255, 0.25);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.controlButton:hover {
   transform: translateY(-2px);
-  box-shadow: 10px 10px 16px var(--shadow-dark),
-    -10px -10px 16px var(--shadow-light),
-    0 0 16px var(--glow);
+  color: #f4f8ff;
+  box-shadow: 0 10px 18px rgba(5, 9, 17, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.controlButton:hover::before {
+  opacity: 1;
+}
+
+.controlButton:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(5, 9, 17, 0.7),
+    inset 0 2px 3px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes liftIn {

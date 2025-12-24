@@ -121,6 +121,20 @@ class Gameboard {
   get boardMatrix() {
     return this.#coordinatesMatrix.flat();
   }
+
+  //do TDD MF!! - do coordinates per ship, then place those via the test, since placing is not the responsibility
+  //this only makes random coords for them. so, return an object with 5 different coords, test it one by one
+  //make sure it's valid as the number of coords we return grows!! easy.
+  randomiseShipPlacement() {
+    const randomX = Math.floor(Math.random() * 10);
+    const randomY = Math.floor(Math.random() * 10);
+    const randomVerticalOrHorizontal =
+      Math.random() > 0.5 ? "Horizontal" : "Vertical";
+    while (this.#coordinatesMatrix[randomX][randomY] !== 0) {
+      randomY = Math.floor(Math.random() * 10);
+      randomX = Math.floor(Math.random() * 10);
+    }
+  }
 }
 
 export default Gameboard;
