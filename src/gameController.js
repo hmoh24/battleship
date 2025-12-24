@@ -3,8 +3,41 @@ import Gameboard from "./logic/gameBoard.js";
 import Player from "./logic/player.js";
 import render from "./render/render.js";
 
-let firstPlayer = new Player("Human", "Bob");
-let secondPlayer = new Player("Human", "Jim");
+let firstPlayer;
+let player1Type = "Human";
+let secondPlayer;
+let player2Type;
+
+const startForm = document.querySelector(".startCard");
+const modeButtons = startForm.querySelectorAll(".modeButton");
+const player1NameInput = startForm.querySelector("#player1Name");
+const player2NameInput = startForm.querySelector("#player2Name");
+
+startForm.addEventListener("click", (e) => {
+  const btn = e.target.closest(".modeButton");
+  if (btn) {
+    modeButtons.forEach((button) =>
+      button.classList.remove("modeButtonSelected")
+    );
+    btn.classList.add("modeButtonSelected");
+  }
+});
+
+startForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const selected = startForm.querySelector(".modeButtonSelected");
+  player2Type = selected.dataset.mode;
+  const player1Name = player1NameInput.value.trim();
+  const player2Name = player2NameInput.value.trim();
+  try {
+    firstPlayer = new Player(player1Type, player1Name);
+    secondPlayer = new Player(player2Type, player2Name);
+    console.log(firstPlayer, secondPlayer);
+    alert(`success ${firstPlayer.name} ${secondPlayer.name}`);
+  } catch (e) {
+    alert(e.message);
+  }
+});
 
 //Instantiate game boards
 const placeInitialShips = () => {

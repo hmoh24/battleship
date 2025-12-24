@@ -194,6 +194,12 @@ body {
   transform: translateY(0);
 }
 
+.modeButtonSelected {
+  background: linear-gradient(135deg, #ff7ad9, #b65cff);
+  color: #0f1724;
+  box-shadow: 0 0 18px rgba(255, 122, 217, 0.45);
+}
+
 .nameInputs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

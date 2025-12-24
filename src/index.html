@@ -26,18 +26,18 @@
         </div>
 
         <div class="modeSelect">
-          <button class="modeButton" type="button">1 Player vs Computer</button>
-          <button class="modeButton" type="button">2 Players</button>
+          <button class="modeButton modeButtonSelected" type="button" data-mode="Computer">1 Player vs Computer</button>
+          <button class="modeButton" type="button" data-mode="Human">2 Players</button>
         </div>
 
         <div class="nameInputs">
           <label class="inputGroup" for="player1Name">
             <span>Player 1</span>
-            <input class="nameInput" id="player1Name" name="player1Name" type="text" placeholder="Enter name" required>
+            <input class="nameInput" id="player1Name" name="player1Name" type="text" placeholder="Enter name" maxlength="20" required>
           </label>
           <label class="inputGroup" for="player2Name">
             <span>Player 2 / Computer</span>
-            <input class="nameInput" id="player2Name" name="player2Name" type="text" placeholder="Enter name" required>
+            <input class="nameInput" id="player2Name" name="player2Name" type="text" placeholder="Enter name" maxlength="20" required>
           </label>
         </div>
 
