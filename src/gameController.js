@@ -80,7 +80,7 @@ placeInitialShips();
 
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
-boardElements.forEach((div, index) => {
+boardElements.forEach((div) => {
   for (let i = 0; i < 100; i++) {
     let gridSquare = document.createElement("div");
     gridSquare.classList.add("gridSquare", "gridHover");
@@ -103,10 +103,12 @@ render(player2Board, secondPlayer, true, false);
 //     ],
 //   },
 // };
-
+const turnElement = document.getElementsByClassName("turn-text")[0];
+const resultElement = document.getElementsByClassName("result-text")[0];
 const boardContainer = document.getElementsByClassName("boards")[0];
 boardContainer.addEventListener("click", (e) => {
   console.log("State: ", gameState);
+
   if (gameState === "Switch 1-2" || gameState === "Switch 2-1") {
     //none
   } else if (gameState === "Player 1 Turn") {
@@ -119,8 +121,15 @@ boardContainer.addEventListener("click", (e) => {
       let resultString =
         secondPlayer.gameboard.receiveAttack(coordNumericArray);
       console.log(resultString);
-      render(player2Board, secondPlayer, false, false);
-      gameState = "Switch 1-2";
+      resultElement.textContent = resultString;
+      if (resultString === "Missed!") {
+        render(player2Board, secondPlayer, false, false);
+        gameState = "Switch 1-2";
+      } else {
+        render(player2Board, secondPlayer, true, false);
+        if (secondPlayer.gameboard.allShipsSunk())
+          alert(`${firstPlayer.name} wins!!`);
+      }
     }
   } else if (gameState === "Player 2 Turn") {
     if (
@@ -131,10 +140,18 @@ boardContainer.addEventListener("click", (e) => {
       const coordNumericArray = coordStringArray.map(Number);
       let resultString = firstPlayer.gameboard.receiveAttack(coordNumericArray);
       console.log(resultString);
-      render(player1Board, firstPlayer, false, false);
-      gameState = "Switch 2-1";
+      resultElement.textContent = resultString;
+      if (resultString === "Missed!") {
+        render(player1Board, firstPlayer, false, false);
+        gameState = "Switch 2-1";
+      } else {
+        render(player1Board, firstPlayer, true, false);
+        if (firstPlayer.gameboard.allShipsSunk())
+          alert(`${secondPlayer.name} wins!!`);
+      }
     }
   }
+  turnElement.textContent = gameState;
 });
 
 const footer = document.getElementsByClassName("footer")[0];
@@ -154,13 +171,17 @@ footer.addEventListener("click", (e) => {
       render(player1Board, firstPlayer, true, false);
       render(player2Board, secondPlayer, false, true);
       gameState = "Player 2 Turn";
+      resultElement.textContent = "Planning next attack";
       console.log("after click", gameState);
     }
     if (gameState === "Display 2-1") {
       render(player1Board, firstPlayer, false, true);
       render(player2Board, secondPlayer, true, false);
       gameState = "Player 1 Turn";
+      resultElement.textContent = "Planning next attack";
+
       console.log("after click", gameState);
     }
   }
+  turnElement.textContent = gameState;
 });

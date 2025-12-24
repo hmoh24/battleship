@@ -111,6 +111,143 @@ body {
   letter-spacing: 0.4px;
 }
 
+.boardsDisplay {
+  display: none;
+}
+
+.startCard {
+  display: block;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+  border-radius: 26px;
+  background: var(--surface);
+  box-shadow: 12px 12px 24px var(--shadow-dark),
+    -12px -12px 24px var(--shadow-light),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 26px;
+  animation: fadeInUp 500ms ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.startCard::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  bottom: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(111, 227, 255, 0.25), transparent 70%);
+  z-index: 0;
+}
+
+.startCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.startIntro h2 {
+  margin: 8px 0 6px;
+  font-size: 24px;
+}
+
+.startIntro p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.modeSelect {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.modeButton {
+  border: none;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #5aa2ff, #6fe3ff);
+  color: #0f1724;
+  box-shadow: 6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light),
+    0 0 16px rgba(111, 227, 255, 0.25);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.modeButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 10px 10px 16px var(--shadow-dark),
+    -10px -10px 16px var(--shadow-light),
+    0 0 20px rgba(111, 227, 255, 0.35);
+}
+
+.modeButton:active {
+  transform: translateY(0);
+}
+
+.nameInputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.inputGroup {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nameInput {
+  width: 100%;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #101827;
+  color: var(--ink);
+  box-shadow: inset 6px 6px 12px var(--shadow-dark),
+    inset -6px -6px 12px var(--shadow-light);
+}
+
+.nameInput::placeholder {
+  color: rgba(154, 168, 189, 0.6);
+}
+
+.startButton {
+  justify-self: center;
+  min-width: 220px;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #0f1724;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  box-shadow: 6px 6px 14px var(--shadow-dark),
+    -6px -6px 14px var(--shadow-light),
+    0 0 18px var(--glow);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.startButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 10px 10px 18px var(--shadow-dark),
+    -10px -10px 18px var(--shadow-light),
+    0 0 22px var(--glow);
+}
+
 .info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

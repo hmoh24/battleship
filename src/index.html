@@ -18,38 +18,61 @@
         <div class="pill">Phase: Setup</div>
       </div>
     </header>
+      <form class="startCard">
+        <div class="startIntro">
+          <span class="eyebrow">Start Screen</span>
+          <h2>Choose your battle setup</h2>
+          <p>Pick a mode, enter names, then launch.</p>
+        </div>
 
-    <section class="info">
-      <div class="card">
-        <h2>Objective</h2>
-        <p>Sink all enemy ships before they sink yours.</p>
-      </div>
-      <div class="card">
-        <h2>Status</h2>
-        <p>Waiting for placements.</p>
-      </div>
-      <div class="card tip-card">
-        <h2>Tip</h2>
-        <p>Vary spacing to dodge easy patterns.</p>
-      </div>
+        <div class="modeSelect">
+          <button class="modeButton" type="button">1 Player vs Computer</button>
+          <button class="modeButton" type="button">2 Players</button>
+        </div>
+
+        <div class="nameInputs">
+          <label class="inputGroup" for="player1Name">
+            <span>Player 1</span>
+            <input class="nameInput" id="player1Name" name="player1Name" type="text" placeholder="Enter name" required>
+          </label>
+          <label class="inputGroup" for="player2Name">
+            <span>Player 2 / Computer</span>
+            <input class="nameInput" id="player2Name" name="player2Name" type="text" placeholder="Enter name" required>
+          </label>
+        </div>
+
+        <button class="startButton" type="submit">Start Battle</button>
+      </form>
+    <section class="boardsDisplay">
+      <section class="info">
+        <div class="card">
+          <h2>Turn</h2>
+          <p class="turn-text">Begin</p>
+        </div>
+        <div class="card">
+          <h2>Attack Result</h2>
+          <p class="result-text">Waiting for placements.</p>
+        </div>
+      </section>
+      
+      <main class="boards">
+        <section class="board-shell">
+          <h3>Your Fleet</h3>
+          <div class="board" aria-label="Player 1 gameboard"></div>
+        </section>
+        <section class="board-shell">
+          <h3>Enemy Waters</h3>
+          <div class="board" aria-label="Player 2 gameboard"></div>
+        </section>
+      </main>
+      
+      <footer class="footer">
+        <div class="hint">Controls will live here later.</div>
+        <button class="ghost" type="button">Display</button>
+        <button class="ghost" type="button">Switch</button>
+      </footer>
     </section>
-
-    <main class="boards">
-      <section class="board-shell">
-        <h3>Your Fleet</h3>
-        <div class="board" aria-label="Player 1 gameboard"></div>
-      </section>
-      <section class="board-shell">
-        <h3>Enemy Waters</h3>
-        <div class="board" aria-label="Player 2 gameboard"></div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div class="hint">Controls will live here later.</div>
-      <button class="ghost" type="button">Display</button>
-      <button class="ghost" type="button">Switch</button>
-    </footer>
+    
   </div>
 </body>
 <script src="gameController.js" type="module"></script>
