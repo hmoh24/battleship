@@ -404,4 +404,24 @@ describe("Gameboard", () => {
       expect(board.allShipsSunk()).toBe(false);
     });
   });
+  describe("randomisedCoordinates", () => {
+    beforeEach(() => {
+      board = new Gameboard();
+    });
+
+    test("Can generate coordinates for destroyer", () => {
+      let destroyer = new Ship("Destroyer");
+      let coordsDestroyer = board.randomiseCoordinates(1);
+      expect(board.place(destroyer, coordsDestroyer)).toBe(true);
+    });
+
+    test("Can generate coordinates for two ships of different length", () => {
+      let destroyer = new Ship("Destroyer");
+      let cruiser = new Ship("Cruiser");
+      let coordsDestroyer = board.randomiseCoordinates(1);
+      let coordsCruiser = board.randomiseCoordinates(2);
+      expect(board.place(destroyer, coordsDestroyer)).toBe(true);
+      expect(board.place(cruiser, coordsCruiser)).toBe(true);
+    });
+  });
 });

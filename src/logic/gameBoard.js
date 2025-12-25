@@ -125,15 +125,52 @@ class Gameboard {
   //do TDD MF!! - do coordinates per ship, then place those via the test, since placing is not the responsibility
   //this only makes random coords for them. so, return an object with 5 different coords, test it one by one
   //make sure it's valid as the number of coords we return grows!! easy.
-  randomiseShipPlacement() {
-    const randomX = Math.floor(Math.random() * 10);
-    const randomY = Math.floor(Math.random() * 10);
-    const randomVerticalOrHorizontal =
-      Math.random() > 0.5 ? "Horizontal" : "Vertical";
-    while (this.#coordinatesMatrix[randomX][randomY] !== 0) {
-      randomY = Math.floor(Math.random() * 10);
-      randomX = Math.floor(Math.random() * 10);
+  randomiseCoordinates(shipLength) {
+    let coordArray = [];
+
+    const isCoordinateEmpty = (array) => {
+      let [x, y] = array;
+      return this.#coordinatesMatrix[y][x] === 0;
+    };
+
+    function findRandomEmptyCoord() {
+      let randomX = Math.floor(Math.random() * 10);
+      let randomY = Math.floor(Math.random() * 10);
+      while (!isCoordinateEmpty([randomX, randomY])) {
+        randomY = Math.floor(Math.random() * 10);
+        randomX = Math.floor(Math.random() * 10);
+      }
+      return [randomX, randomY];
     }
+
+    function calculateAdjacentCoord(placement) {
+      let positive;
+      let negative;
+      if (placement === "Vertical") {
+        positive = [start[0], start[1] + 1];
+        negative = [start[0], start[1] - 1];
+      } else {
+        positive = [start[0] + 1, start[1]];
+        negative = [start[0] - 1, start[1]];
+      }
+      return [positive, negative];
+    }
+
+    const randomVerticalOrHorizontalPlacement =
+      Math.random() > 0.5 ? "Horizontal" : "Vertical";
+    let start = findRandomEmptyCoord();
+    let adjacent = calculateAdjacentCoord(randomVerticalOrHorizontalPlacement);
+
+    while (!isCoordinateEmpty(adjacent[0]) && !isCoordinateEmpty(adjacent[0])) {
+      start = findRandomEmptyCoord();
+      adjacent = calculateAdjacentCoord(randomVerticalOrHorizontalPlacement);
+    }
+
+    isCoordinateEmpty(adjacent[0])
+      ? (adjacent = adjacent[0])
+      : (adjacent = adjacent[1]);
+
+    return [start, adjacent];
   }
 }
 
