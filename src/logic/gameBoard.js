@@ -122,14 +122,14 @@ class Gameboard {
     return this.#coordinatesMatrix.flat();
   }
 
-  //do TDD MF!! - do coordinates per ship, then place those via the test, since placing is not the responsibility
-  //this only makes random coords for them. so, return an object with 5 different coords, test it one by one
-  //make sure it's valid as the number of coords we return grows!! easy.
-  randomiseCoordinates(shipLength) {
-    let coordArray = [];
-
+  // do not run consecutively for many ships, place ship before running again for another
+  randomiseCoordinates(ship) {
     const isCoordinateEmpty = (array) => {
       let [x, y] = array;
+      if (this.#coordinatesMatrix[y][x] === undefined) {
+        console.log(array);
+        console.log(ship.name);
+      }
       return this.#coordinatesMatrix[y][x] === 0;
     };
 
@@ -142,35 +142,83 @@ class Gameboard {
       }
       return [randomX, randomY];
     }
-
-    function calculateAdjacentCoord(placement) {
-      let positive;
-      let negative;
-      if (placement === "Vertical") {
-        positive = [start[0], start[1] + 1];
-        negative = [start[0], start[1] - 1];
-      } else {
-        positive = [start[0] + 1, start[1]];
-        negative = [start[0] - 1, start[1]];
+    function contiguousCoordinatesAllDirections(shipLength, startPoint) {
+      let [x, y] = startPoint;
+      let horizontalPositive = [startPoint];
+      let horizontalNegative = [startPoint];
+      let verticalPositive = [startPoint];
+      let verticalNegative = [startPoint];
+      let continueHPve = true;
+      let continueHNve = true;
+      let continueVPve = true;
+      let continueVNve = true;
+      let returnArray = [];
+      // 1 index to start addition from 1, exclusive of length cos we already start with one coord
+      for (let i = 1; i < shipLength; i++) {
+        if (continueHPve) {
+          //coordinate within bounds check first to early exit to prevent error with out of bounds check on is coordinate empty
+          if (
+            !Gameboard.#coordinateWithinBounds([x + i, y]) ||
+            !isCoordinateEmpty([x + i, y])
+          ) {
+            continueHPve = false;
+          } else {
+            horizontalPositive.push([x + i, y]);
+          }
+        }
+        if (continueHNve) {
+          if (
+            !Gameboard.#coordinateWithinBounds([x - i, y]) ||
+            !isCoordinateEmpty([x - i, y])
+          ) {
+            continueHNve = false;
+          } else {
+            horizontalNegative.push([x - i, y]);
+          }
+        }
+        if (continueVPve) {
+          if (
+            !Gameboard.#coordinateWithinBounds([x, y + i]) ||
+            !isCoordinateEmpty([x, y + i])
+          ) {
+            continueVPve = false;
+          } else {
+            verticalPositive.push([x, y + i]);
+          }
+        }
+        if (continueVNve) {
+          if (
+            !Gameboard.#coordinateWithinBounds([x, y - i]) ||
+            !isCoordinateEmpty([x, y - i])
+          ) {
+            continueVNve = false;
+          } else {
+            verticalNegative.push([x, y - i]);
+          }
+        }
       }
-      return [positive, negative];
+      continueHPve ? returnArray.push(horizontalPositive) : null;
+      continueHNve ? returnArray.push(horizontalNegative) : null;
+      continueVPve ? returnArray.push(verticalPositive) : null;
+      continueVNve ? returnArray.push(verticalNegative) : null;
+      return returnArray;
     }
 
-    const randomVerticalOrHorizontalPlacement =
-      Math.random() > 0.5 ? "Horizontal" : "Vertical";
     let start = findRandomEmptyCoord();
-    let adjacent = calculateAdjacentCoord(randomVerticalOrHorizontalPlacement);
+    let coordinatesAllDirections = contiguousCoordinatesAllDirections(
+      ship.length,
+      start
+    );
 
-    while (!isCoordinateEmpty(adjacent[0]) && !isCoordinateEmpty(adjacent[0])) {
+    while (coordinatesAllDirections.length === 0) {
       start = findRandomEmptyCoord();
-      adjacent = calculateAdjacentCoord(randomVerticalOrHorizontalPlacement);
+      contiguousCoordinatesAllDirections(ship.length, start);
     }
-
-    isCoordinateEmpty(adjacent[0])
-      ? (adjacent = adjacent[0])
-      : (adjacent = adjacent[1]);
-
-    return [start, adjacent];
+    //randomly select the valid coordinate direction to prevent bias for horizontal vs vertical
+    let selectionIndex = Math.floor(
+      Math.random() * coordinatesAllDirections.length
+    );
+    return coordinatesAllDirections[selectionIndex];
   }
 }
 

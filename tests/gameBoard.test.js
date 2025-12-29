@@ -411,17 +411,33 @@ describe("Gameboard", () => {
 
     test("Can generate coordinates for destroyer", () => {
       let destroyer = new Ship("Destroyer");
-      let coordsDestroyer = board.randomiseCoordinates(1);
+      let coordsDestroyer = board.randomiseCoordinates(destroyer);
       expect(board.place(destroyer, coordsDestroyer)).toBe(true);
     });
 
     test("Can generate coordinates for two ships of different length", () => {
       let destroyer = new Ship("Destroyer");
       let cruiser = new Ship("Cruiser");
-      let coordsDestroyer = board.randomiseCoordinates(1);
-      let coordsCruiser = board.randomiseCoordinates(2);
+      let coordsDestroyer = board.randomiseCoordinates(destroyer);
       expect(board.place(destroyer, coordsDestroyer)).toBe(true);
+
+      let coordsCruiser = board.randomiseCoordinates(cruiser);
       expect(board.place(cruiser, coordsCruiser)).toBe(true);
+    });
+
+    test("Can generate coordinates for a full board of ships", () => {
+      const ships = [
+        new Ship("Carrier"),
+        new Ship("Battleship"),
+        new Ship("Cruiser"),
+        new Ship("Submarine"),
+        new Ship("Destroyer"),
+      ];
+
+      ships.forEach((ship) => {
+        const coords = board.randomiseCoordinates(ship);
+        expect(board.place(ship, coords)).toBe(true);
+      });
     });
   });
 });
