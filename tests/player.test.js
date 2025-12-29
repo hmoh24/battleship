@@ -51,4 +51,11 @@ describe("Player", () => {
       expect(computerPlayer.gameboard instanceof Gameboard).toBe(true);
     });
   });
+  describe("reset gameboard", () => {
+    test("reset gameboard method creates a new gameboard object", () => {
+      let board1 = playerBob.gameboard;
+      playerBob.resetGameboard();
+      expect(board1).not.toBe(playerBob.gameboard);
+    });
+  });
 });

@@ -53,7 +53,7 @@
           <h2>Attack Result</h2>
           <p class="result-text">Waiting for placements.</p>
         </div>
-        <div class="card instruction-card">
+        <form class="card instruction-card">
           <h2>Instructions</h2>
           <p class="instruction-text">
             Player 2, leave the screen. Player 1, place your ships by clicking the randomiser,
@@ -63,11 +63,11 @@
             <span>Ship Type</span>
             <select class="nameInput" id="shipSelect" name="shipSelect">
               <option value="none">None</option>
-              <option value="Carrier">Carrier</option>
-              <option value="Battleship">Battleship</option>
-              <option value="Cruiser">Cruiser</option>
-              <option value="Submarine">Submarine</option>
-              <option value="Destroyer">Destroyer</option>
+              <option value="Carrier">Carrier (length 5)</option>
+              <option value="Battleship">Battleship (length 4)</option>
+              <option value="Cruiser">Cruiser (length 3)</option>
+              <option value="Submarine">Submarine (length 3)</option>
+              <option value="Destroyer">Destroyer (length 2)</option>
             </select>
           </label>
           <label class="inputGroup" for="shipCoords">
@@ -80,8 +80,11 @@
               placeholder='[0, 6], [0, 7]'
             >
           </label>
-          <button class="controlButton" type="button" title="Submit ship placement">Submit Placement</button>
-        </div>
+          <div class="instruction-actions">
+            <button class="controlButton" type="button" data-action="randomise" title="Randomly place ships">Randomise</button>
+            <button class="controlButton" type="submit" title="Submit ship placement">Submit Placement</button>
+          </div>
+        </form>
       </section>
       
       <main class="boards">
@@ -99,7 +102,6 @@
         <div class="controls">
           <button class="controlButton" type="button" data-action="display" title="Show your board and enable attacks">Display</button>
           <button class="controlButton" type="button" data-action="switch" title="Clear boards to swap turns">Switch</button>
-          <button class="controlButton" type="button" data-action="randomise" title="Randomly place ships">Randomise</button>
           <button class="controlButton" type="button" data-action="restart" title="Restart the game">Restart</button>
         </div>
       </footer>

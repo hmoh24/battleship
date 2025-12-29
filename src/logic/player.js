@@ -25,6 +25,10 @@ class Player {
   get gameboard() {
     return this.#gameboard;
   }
+
+  resetGameboard() {
+    this.#gameboard = new Gameboard();
+  }
 }
 
 export default Player;

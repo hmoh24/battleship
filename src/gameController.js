@@ -7,12 +7,16 @@ let firstPlayer;
 let player1Type = "Human";
 let secondPlayer;
 let player2Type;
+let gameState = "Start";
 
 const startForm = document.querySelector(".startCard");
 const boardPage = document.querySelector(".boardsDisplay");
 const modeButtons = startForm.querySelectorAll(".modeButton");
 const player1NameInput = startForm.querySelector("#player1Name");
 const player2NameInput = startForm.querySelector("#player2Name");
+const instructionForm = document.querySelector(".instruction-card");
+const shipSelect = instructionForm.querySelector("#shipSelect");
+const shipCoordsInput = instructionForm.querySelector("#shipCoords");
 
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
@@ -52,26 +56,84 @@ startForm.addEventListener("click", (e) => {
 });
 
 startForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const selected = startForm.querySelector(".modeButtonSelected");
-  player2Type = selected.dataset.mode;
-  const player1Name = player1NameInput.value.trim();
-  const player2Name = player2NameInput.value.trim();
-  try {
-    firstPlayer = new Player(player1Type, player1Name);
-    secondPlayer = new Player(player2Type, player2Name);
-    console.log(firstPlayer, secondPlayer);
-    startForm.style.display = "none";
-    boardPage.style.display = "block";
-    turnCard.style.display = "none";
-    resultCard.style.display = "none";
-    instructionText.textContent = `${player2Name}, leave the screen. ${player1Name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
-  } catch (e) {
-    alert(e.message);
+  if (gameState !== "Start") {
+    alert("Game state is incorrect for this function, refresh to fix.");
+  } else {
+    e.preventDefault();
+    const selected = startForm.querySelector(".modeButtonSelected");
+    player2Type = selected.dataset.mode;
+    const player1Name = player1NameInput.value.trim();
+    const player2Name = player2NameInput.value.trim();
+    try {
+      firstPlayer = new Player(player1Type, player1Name);
+      secondPlayer = new Player(player2Type, player2Name);
+      console.log(firstPlayer, secondPlayer);
+      startForm.style.display = "none";
+      boardPage.style.display = "block";
+      turnCard.style.display = "none";
+      resultCard.style.display = "none";
+      instructionText.textContent = `${player2Name}, leave the screen. ${player1Name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
+      gameState = "Player 1 place ships";
+    } catch (e) {
+      alert(e.message);
+    }
   }
 });
 
-//randomise button working on player 1 turn to place, need to set game state. Unit test gameboard function?
+const randomiseBtn = document.querySelector('[data-action="randomise"]');
+randomiseBtn.addEventListener("click", () => {
+  //check for valid game states
+  if (gameState === "Player 1 place ships") {
+    firstPlayer.resetGameboard();
+    const ships = [
+      new Ship("Carrier"),
+      new Ship("Battleship"),
+      new Ship("Cruiser"),
+      new Ship("Submarine"),
+      new Ship("Destroyer"),
+    ];
+    ships.forEach((ship) => {
+      const coords = firstPlayer.gameboard.randomiseCoordinates(ship);
+      firstPlayer.gameboard.place(ship, coords);
+    });
+    render(player1Board, firstPlayer, true, true);
+  }
+});
+
+instructionForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const shipType = shipSelect.value;
+  if (!shipType || shipType === "none") {
+    alert("Select a ship type before submitting.");
+    return;
+  }
+
+  const coordMatches = shipCoordsInput.value.match(/-?\d+/g);
+  if (!coordMatches || coordMatches.length % 2 !== 0) {
+    alert('Invalid coordinates. Example: [0, 6], [0, 7]');
+    return;
+  }
+
+  const coords = [];
+  for (let i = 0; i < coordMatches.length; i += 2) {
+    coords.push([Number(coordMatches[i]), Number(coordMatches[i + 1])]);
+  }
+
+  let targetPlayer = firstPlayer;
+  let targetBoard = player1Board;
+  if (gameState.includes("Player 2")) {
+    targetPlayer = secondPlayer;
+    targetBoard = player2Board;
+  }
+
+  try {
+    const ship = new Ship(shipType);
+    targetPlayer.gameboard.place(ship, coords);
+    render(targetBoard, targetPlayer, false, true);
+  } catch (err) {
+    alert(err.message);
+  }
+});
 
 //Instantiate game boards
 const placeInitialShips = () => {
@@ -145,11 +207,6 @@ const placeInitialShips = () => {
 };
 // placeInitialShips();
 
-//Initialise
-let gameState = "Player 1 Turn";
-render(player1Board, firstPlayer, false, true);
-render(player2Board, secondPlayer, true, false);
-
 //OPTIMISATION - make a map to handle event handler logic cleanly
 // let turnLogic = {
 //   player1: {
@@ -210,7 +267,6 @@ boardContainer.addEventListener("click", (e) => {
 const footer = document.getElementsByClassName("footer")[0];
 const displayBtn = footer.querySelector('[data-action="display"]');
 const switchBtn = footer.querySelector('[data-action="switch"]');
-const randomiseBtn = footer.querySelector('[data-action="randomise"]');
 const restartBtn = footer.querySelector('[data-action="restart"]');
 footer.addEventListener("click", (e) => {
   console.log("State: ", gameState);

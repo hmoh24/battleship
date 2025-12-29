@@ -325,6 +325,16 @@ body {
   justify-self: start;
 }
 
+.instruction-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.instruction-actions .controlButton {
+  width: 100%;
+}
+
 .boards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
