@@ -1,6 +1,6 @@
 import shipColors from "../assets/ships.js";
 
-function render(boardDiv, player, clickableBoard, displayShips) {
+function renderBoard(boardDiv, player, clickableBoard, displayShips) {
   console.log("run");
   const gridSquares = [...boardDiv.childNodes].filter((element) => {
     return element.classList.contains("gridSquare");
@@ -52,4 +52,4 @@ function colourGridSquare(code) {
   return colour;
 }
 
-export default render;
+export default renderBoard;

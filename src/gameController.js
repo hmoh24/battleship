@@ -1,24 +1,26 @@
 import Ship from "./logic/ship.js";
 import Gameboard from "./logic/gameBoard.js";
 import Player from "./logic/player.js";
-import render from "./render/render.js";
+import renderBoard from "./ui/renderBoard.js";
+import {
+  buttonSwitch,
+  createPlayers,
+  startFormUIUpdate,
+} from "./ui/startForm.js";
+import { generateGrid } from "./ui/board.js";
 
 let firstPlayer;
-let player1Type = "Human";
 let secondPlayer;
-let player2Type;
 let gameState = "Start";
 
 const startForm = document.querySelector(".startCard");
-const boardPage = document.querySelector(".boardsDisplay");
-const modeButtons = startForm.querySelectorAll(".modeButton");
 const player1NameInput = startForm.querySelector("#player1Name");
 const player2NameInput = startForm.querySelector("#player2Name");
 const instructionForm = document.querySelector(".instruction-card");
 const shipSelect = instructionForm.querySelector("#shipSelect");
 const shipCoordsInput = instructionForm.querySelector("#shipCoords");
 // Set selected option: shipSelect.value = "Carrier"
-
+console.log(startForm);
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
 const player1BoardTitle = player1Board
@@ -37,49 +39,29 @@ const turnText = document.querySelector(".turn-text");
 const resultText = document.querySelector(".result-text");
 const instructionText = document.querySelector(".instruction-text");
 
-boardElements.forEach((div) => {
-  for (let i = 0; i < 100; i++) {
-    let gridSquare = document.createElement("div");
-    gridSquare.classList.add("gridSquare", "gridHover");
-    gridSquare.setAttribute("data-coord", `${i % 10}${Math.floor(i / 10)}`);
-    div.appendChild(gridSquare);
-  }
-});
-
 startForm.addEventListener("click", (e) => {
-  const btn = e.target.closest(".modeButton");
-  if (btn) {
-    modeButtons.forEach((button) =>
-      button.classList.remove("modeButtonSelected")
-    );
-    btn.classList.add("modeButtonSelected");
-  }
+  buttonSwitch(e);
 });
 
 startForm.addEventListener("submit", (e) => {
+  console.log(startForm);
+  e.preventDefault();
   if (gameState !== "Start") {
     alert("Game state is incorrect for this function, refresh to fix.");
   } else {
-    e.preventDefault();
-    const selected = startForm.querySelector(".modeButtonSelected");
-    player2Type = selected.dataset.mode;
-    const player1Name = player1NameInput.value.trim();
-    const player2Name = player2NameInput.value.trim();
     try {
-      firstPlayer = new Player(player1Type, player1Name);
-      secondPlayer = new Player(player2Type, player2Name);
+      console.log("x");
+      [firstPlayer, secondPlayer] = createPlayers();
       console.log(firstPlayer, secondPlayer);
-      startForm.style.display = "none";
-      boardPage.style.display = "block";
-      turnCard.style.display = "none";
-      resultCard.style.display = "none";
-      instructionText.textContent = `${player2Name}, leave the screen. ${player1Name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
+      startFormUIUpdate(firstPlayer, secondPlayer);
       gameState = "Player 1 place ships";
-    } catch (e) {
-      alert(e.message);
+    } catch (error) {
+      alert(error.message);
     }
   }
 });
+
+generateGrid(boardElements);
 
 const randomiseBtn = document.querySelector('[data-action="randomise"]');
 randomiseBtn.addEventListener("click", () => {
@@ -94,7 +76,6 @@ randomiseBtn.addEventListener("click", () => {
       gameState === "Player 1 place ships"
         ? [firstPlayer, player1Board]
         : [secondPlayer, player2Board];
-
     player.resetGameboard();
     const ships = [
       new Ship("Carrier"),
@@ -107,7 +88,7 @@ randomiseBtn.addEventListener("click", () => {
       const coords = player.gameboard.randomiseCoordinates(ship);
       player.gameboard.place(ship, coords);
     });
-    render(board, player, true, true);
+    renderBoard(board, player, true, true);
   }
 });
 
@@ -140,7 +121,7 @@ instructionForm.addEventListener("submit", (e) => {
   try {
     const ship = new Ship(shipType);
     player.gameboard.replace(ship, coords);
-    render(board, player, false, true);
+    renderBoard(board, player, false, true);
   } catch (err) {
     alert(err.message);
   }
@@ -150,8 +131,8 @@ instructionForm.addEventListener("submit", (e) => {
 // let turnLogic = {
 //   player1: {
 //     boardRender: [
-//       render(player1Board, firstPlayer, false, true),
-//       render(player2Board, secondPlayer, true, false),
+//       renderBoard(player1Board, firstPlayer, false, true),
+//       renderBoard(player2Board, secondPlayer, true, false),
 //     ],
 //   },
 // };
@@ -170,15 +151,15 @@ boardContainer.addEventListener("click", (e) => {
       console.log(resultString);
       resultText.textContent = resultString;
       if (resultString === "Missed!") {
-        render(player2Board, secondPlayer, false, false);
+        renderBoard(player2Board, secondPlayer, false, false);
         gameState = "Switch 1-2";
       } else {
-        render(player2Board, secondPlayer, true, false);
+        renderBoard(player2Board, secondPlayer, true, false);
         if (secondPlayer.gameboard.allShipsSunk()) {
           alert(`${firstPlayer.name} wins!!`);
           gameState = "Player 1 Win!";
           turnText.textContent = gameState;
-          render(player2Board, secondPlayer, false, false);
+          renderBoard(player2Board, secondPlayer, false, false);
         }
       }
     }
@@ -193,15 +174,15 @@ boardContainer.addEventListener("click", (e) => {
       console.log(resultString);
       resultText.textContent = resultString;
       if (resultString === "Missed!") {
-        render(player1Board, firstPlayer, false, false);
+        renderBoard(player1Board, firstPlayer, false, false);
         gameState = "Switch 2-1";
       } else {
-        render(player1Board, firstPlayer, true, false);
+        renderBoard(player1Board, firstPlayer, true, false);
         if (firstPlayer.gameboard.allShipsSunk()) {
           alert(`${secondPlayer.name} wins!!`);
           gameState = "Player 2 Win!";
           turnText.textContent = gameState;
-          render(player1Board, firstPlayer, false, false);
+          renderBoard(player1Board, firstPlayer, false, false);
         }
       }
     }
@@ -236,28 +217,28 @@ footer.addEventListener("click", (e) => {
       turnCard.style.display = "block";
       resultCard.style.display = "block";
     }
-    render(player1Board, firstPlayer, false, false);
-    render(player2Board, secondPlayer, false, false);
+    renderBoard(player1Board, firstPlayer, false, false);
+    renderBoard(player2Board, secondPlayer, false, false);
   }
   if (
     e.target === switchBtn &&
     (gameState === "Switch 1-2" || gameState === "Switch 2-1")
   ) {
-    render(player1Board, firstPlayer, false, false);
-    render(player2Board, secondPlayer, false, false);
+    renderBoard(player1Board, firstPlayer, false, false);
+    renderBoard(player2Board, secondPlayer, false, false);
     gameState = gameState === "Switch 1-2" ? "Display 1-2" : "Display 2-1";
   }
   if (e.target === displayBtn) {
     if (gameState === "Display 1-2") {
-      render(player1Board, firstPlayer, true, false);
-      render(player2Board, secondPlayer, false, true);
+      renderBoard(player1Board, firstPlayer, true, false);
+      renderBoard(player2Board, secondPlayer, false, true);
       gameState = "Player 2 Turn";
       resultText.textContent = "Planning next attack";
       console.log("after click", gameState);
     }
     if (gameState === "Display 2-1") {
-      render(player1Board, firstPlayer, false, true);
-      render(player2Board, secondPlayer, true, false);
+      renderBoard(player1Board, firstPlayer, false, true);
+      renderBoard(player2Board, secondPlayer, true, false);
       gameState = "Player 1 Turn";
       resultText.textContent = "Planning next attack";
       console.log("after click", gameState);
@@ -272,7 +253,7 @@ footer.addEventListener("click", (e) => {
     gameState = "Player 1 place ships";
     firstPlayer.resetGameboard();
     secondPlayer.resetGameboard();
-    render(player1Board, firstPlayer, false, true);
-    render(player2Board, secondPlayer, false, false);
+    renderBoard(player1Board, firstPlayer, false, true);
+    renderBoard(player2Board, secondPlayer, false, false);
   }
 });
