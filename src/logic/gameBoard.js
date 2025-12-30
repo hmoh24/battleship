@@ -117,6 +117,10 @@ class Gameboard {
     return true;
   }
 
+  allShipsPlaced() {
+    return this.#shipsPlaced.size === 5;
+  }
+
   get boardMatrix() {
     return this.#coordinatesMatrix.flat();
   }
