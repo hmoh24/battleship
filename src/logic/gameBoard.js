@@ -75,7 +75,7 @@ class Gameboard {
       this.#coordinatesMatrix[coordinate[1]][coordinate[0]] =
         Gameboard.#shipCodes[ship.name];
     });
-    this.#shipsPlaced.set(ship.name, ship);
+    this.#shipsPlaced.set(ship.name, { ship, coordinates: coordinatesArray });
     return true;
   }
 
@@ -92,7 +92,7 @@ class Gameboard {
     if (shipCode !== 0) {
       const ship = this.#shipsPlaced.get(
         Gameboard.#getShipNameByCode(shipCode)
-      );
+      ).ship;
       //set matrix code to 9 when hit to set red colour
       this.#coordinatesMatrix[coordinatesArray[1]][coordinatesArray[0]] = 9;
       ship.hit();
@@ -111,13 +111,12 @@ class Gameboard {
 
   allShipsSunk() {
     if (this.#shipsPlaced.size === 0) return false;
-    for (const ship of this.#shipsPlaced.values()) {
-      if (ship.isSunk() === false) return false;
+    for (const shipObject of this.#shipsPlaced.values()) {
+      if (shipObject.ship.isSunk() === false) return false;
     }
     return true;
   }
 
-  //remove after functionality for placing ships
   get boardMatrix() {
     return this.#coordinatesMatrix.flat();
   }
@@ -219,6 +218,32 @@ class Gameboard {
       Math.random() * coordinatesAllDirections.length
     );
     return coordinatesAllDirections[selectionIndex];
+  }
+
+  replace(ship, newCoords) {
+    if (this.#shipsPlaced.get(ship.name) === undefined)
+      throw new Error(
+        "Cannot replace a ship that has not been placed yet, use place instead."
+      );
+    const oldCoords = this.#shipsPlaced.get(ship.name).coordinates;
+    const shipCode = Gameboard.#shipCodes[ship.name];
+    // console.log("shipcode: ", shipCode);
+    // console.log("old coords: ", oldCoords);
+    oldCoords.forEach(([x, y]) => {
+      console.log("code at old coords: ", this.#coordinatesMatrix[y][x]);
+      if (shipCode === this.#coordinatesMatrix[y][x]) {
+        this.#coordinatesMatrix[y][x] = 0;
+      } else
+        throw new Error("Old coordinates do not match gameboard placement.");
+    });
+    this.#shipsPlaced.delete(ship.name);
+    try {
+      this.place(ship, newCoords);
+    } catch (e) {
+      this.place(ship, oldCoords);
+      throw new Error(e.message);
+    }
+    return true;
   }
 }
 

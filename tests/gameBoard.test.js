@@ -440,4 +440,86 @@ describe("Gameboard", () => {
       });
     });
   });
+  describe("replace", () => {
+    let carrier;
+    let battleship;
+    let cruiser;
+    let submarine;
+    let destroyer;
+
+    beforeEach(() => {
+      board = new Gameboard();
+      carrier = new Ship("Carrier");
+      battleship = new Ship("Battleship");
+      cruiser = new Ship("Cruiser");
+      submarine = new Ship("Submarine");
+      destroyer = new Ship("Destroyer");
+    });
+
+    test("replace moves a placed ship to new coordinates", () => {
+      const startCoords = [
+        [0, 0],
+        [1, 0],
+      ];
+      const newCoords = [
+        [4, 4],
+        [5, 4],
+      ];
+
+      board.place(destroyer, startCoords);
+      expect(board.replace(destroyer, newCoords)).toBe(true);
+
+      startCoords.forEach(([x, y]) => {
+        const index = y * 10 + x;
+        expect(board.boardMatrix[index]).toBe(0);
+      });
+
+      newCoords.forEach(([x, y]) => {
+        const index = y * 10 + x;
+        expect(board.boardMatrix[index]).not.toBe(0);
+      });
+    });
+
+    test("replace restores ship to old coords when new coords are invalid", () => {
+      const startCoords = [
+        [0, 0],
+        [1, 0],
+      ];
+      const invalidCoords = [
+        [9, 9],
+        [10, 9],
+      ];
+
+      board.place(destroyer, startCoords);
+      expect(() => board.replace(destroyer, invalidCoords)).toThrow(
+        "Found coordinates out of bounds"
+      );
+
+      startCoords.forEach(([x, y]) => {
+        const index = y * 10 + x;
+        expect(board.boardMatrix[index]).not.toBe(0);
+      });
+
+      const secondDestroyer = new Ship("Destroyer");
+      expect(() =>
+        board.place(secondDestroyer, [
+          [2, 2],
+          [3, 2],
+        ])
+      ).toThrow(
+        `Cannot place second ship of any type. Issue found with ${secondDestroyer.name}`
+      );
+    });
+
+    test("replace throws when ship has not been placed", () => {
+      expect(() =>
+        board.replace(destroyer, [
+          [2, 2],
+          [3, 2],
+        ])
+      ).toThrow(
+        "Cannot replace a ship that has not been placed yet, use place instead."
+      );
+    });
+  });
 });

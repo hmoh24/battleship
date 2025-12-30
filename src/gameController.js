@@ -17,6 +17,7 @@ const player2NameInput = startForm.querySelector("#player2Name");
 const instructionForm = document.querySelector(".instruction-card");
 const shipSelect = instructionForm.querySelector("#shipSelect");
 const shipCoordsInput = instructionForm.querySelector("#shipCoords");
+// Set selected option: shipSelect.value = "Carrier"
 
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
@@ -100,6 +101,8 @@ randomiseBtn.addEventListener("click", () => {
   }
 });
 
+//fix with game state
+//check for game state for both in one if block, then ternary to assign right variable for player 1 vs 2
 instructionForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const shipType = shipSelect.value;
@@ -110,7 +113,7 @@ instructionForm.addEventListener("submit", (e) => {
 
   const coordMatches = shipCoordsInput.value.match(/-?\d+/g);
   if (!coordMatches || coordMatches.length % 2 !== 0) {
-    alert('Invalid coordinates. Example: [0, 6], [0, 7]');
+    alert("Invalid coordinates. Example: [0, 6], [0, 7]");
     return;
   }
 
@@ -128,84 +131,12 @@ instructionForm.addEventListener("submit", (e) => {
 
   try {
     const ship = new Ship(shipType);
-    targetPlayer.gameboard.place(ship, coords);
+    targetPlayer.gameboard.replace(ship, coords);
     render(targetBoard, targetPlayer, false, true);
   } catch (err) {
     alert(err.message);
   }
 });
-
-//Instantiate game boards
-const placeInitialShips = () => {
-  const firstCarrier = new Ship("Carrier");
-  const firstBattleship = new Ship("Battleship");
-  const firstCruiser = new Ship("Cruiser");
-  const firstSubmarine = new Ship("Submarine");
-  const firstDestroyer = new Ship("Destroyer");
-
-  firstPlayer.gameboard.place(firstCarrier, [
-    [0, 0],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [4, 0],
-  ]);
-  firstPlayer.gameboard.place(firstBattleship, [
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [3, 2],
-  ]);
-  firstPlayer.gameboard.place(firstCruiser, [
-    [0, 4],
-    [1, 4],
-    [2, 4],
-  ]);
-  firstPlayer.gameboard.place(firstSubmarine, [
-    [5, 6],
-    [6, 6],
-    [7, 6],
-  ]);
-  firstPlayer.gameboard.place(firstDestroyer, [
-    [8, 9],
-    [9, 9],
-  ]);
-
-  const secondCarrier = new Ship("Carrier");
-  const secondBattleship = new Ship("Battleship");
-  const secondCruiser = new Ship("Cruiser");
-  const secondSubmarine = new Ship("Submarine");
-  const secondDestroyer = new Ship("Destroyer");
-
-  secondPlayer.gameboard.place(secondCarrier, [
-    [9, 0],
-    [9, 1],
-    [9, 2],
-    [9, 3],
-    [9, 4],
-  ]);
-  secondPlayer.gameboard.place(secondBattleship, [
-    [3, 2],
-    [4, 2],
-    [5, 2],
-    [6, 2],
-  ]);
-  secondPlayer.gameboard.place(secondCruiser, [
-    [0, 5],
-    [1, 5],
-    [2, 5],
-  ]);
-  secondPlayer.gameboard.place(secondSubmarine, [
-    [4, 7],
-    [5, 7],
-    [6, 7],
-  ]);
-  secondPlayer.gameboard.place(secondDestroyer, [
-    [0, 9],
-    [1, 9],
-  ]);
-};
-// placeInitialShips();
 
 //OPTIMISATION - make a map to handle event handler logic cleanly
 // let turnLogic = {
