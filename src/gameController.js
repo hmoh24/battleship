@@ -78,7 +78,6 @@ boardContainer.addEventListener("click", (e) => {
       e.target.closest(".board") === player2Board &&
       e.target.classList.contains("gridSquare")
     ) {
-      console.log("clicked");
       handleBoardClick(
         e,
         firstPlayer,
@@ -104,7 +103,6 @@ const displayBtn = footer.querySelector('[data-action="display"]');
 const switchBtn = footer.querySelector('[data-action="switch"]');
 const restartBtn = footer.querySelector('[data-action="restart"]');
 footer.addEventListener("click", (e) => {
-  console.log("State: ", gameState);
   if (
     e.target === switchBtn &&
     (gameState.turn === "Player 1 place ships" ||
@@ -115,15 +113,6 @@ footer.addEventListener("click", (e) => {
     renderBoard(player1Board, firstPlayer, false, false);
     renderBoard(player2Board, secondPlayer, false, false);
     handleSwitch(gameState, firstPlayer, secondPlayer);
-    // if (secondPlayer.type === "Computer") {
-    //   handleRandomise(
-    //     firstPlayer,
-    //     player1Board,
-    //     secondPlayer,
-    //     player2Board,
-    //     "Player 2 place ships"
-    //   );
-    // }
   }
 
   if (e.target === displayBtn) {
