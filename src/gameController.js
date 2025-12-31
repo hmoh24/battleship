@@ -10,6 +10,7 @@ import { handleRandomise } from "./ui/handleRandomise.js";
 import { handleBoardClick } from "./ui/handleBoardClick.js";
 import { handleSwitch } from "./ui/handleSwitch.js";
 import { handleDisplay } from "./ui/handleDisplay.js";
+import { handleRestart } from "./ui/handleRestart.js";
 console.log("Game controller run");
 
 let firstPlayer;
@@ -19,13 +20,7 @@ let gameState = { turn: "Start" };
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
 const boardContainer = document.getElementsByClassName("boards")[0];
-
-//info section
-const turnCard = document.querySelector(".turn-card");
-const resultCard = document.querySelector(".result-card");
-const instructionCard = document.querySelector(".instruction-card");
 const turnText = document.querySelector(".turn-text");
-const resultText = document.querySelector(".result-text");
 
 const startForm = document.querySelector(".startCard");
 startForm.addEventListener("click", (e) => {
@@ -76,15 +71,6 @@ instructionForm.addEventListener("submit", (e) => {
   }
 });
 
-//OPTIMISATION - make a map to handle event handler logic cleanly
-// let turnLogic = {
-//   player1: {
-//     boardRender: [
-//       renderBoard(player1Board, firstPlayer, false, true),
-//       renderBoard(player2Board, secondPlayer, true, false),
-//     ],
-//   },
-// };
 boardContainer.addEventListener("click", (e) => {
   if (gameState.turn === "Player 1 Turn") {
     if (
@@ -133,17 +119,15 @@ footer.addEventListener("click", (e) => {
     );
   }
 
-  turnText.textContent = gameState.turn;
-
   if (e.target === restartBtn) {
-    instructionCard.style.display = "block";
-    turnCard.style.display = "none";
-    resultCard.style.display = "none";
-    resultText.textContent = "Planning next attack";
-    gameState.turn = "Player 1 place ships";
-    firstPlayer.resetGameboard();
-    secondPlayer.resetGameboard();
-    renderBoard(player1Board, firstPlayer, false, true);
-    renderBoard(player2Board, secondPlayer, false, false);
+    handleRestart(
+      gameState,
+      firstPlayer,
+      secondPlayer,
+      player1Board,
+      player2Board
+    );
   }
+
+  turnText.textContent = gameState.turn;
 });
