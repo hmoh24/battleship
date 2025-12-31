@@ -8,6 +8,8 @@ import { generateGrid } from "./ui/board.js";
 import { handlePlaceShip } from "./ui/handleShipPlace.js";
 import { handleRandomise } from "./ui/handleRandomise.js";
 import { handleBoardClick } from "./ui/handleBoardClick.js";
+import { handleSwitch } from "./ui/handleSwitch.js";
+import { handleDisplay } from "./ui/handleDisplay.js";
 console.log("Game controller run");
 
 let firstPlayer;
@@ -24,7 +26,6 @@ const resultCard = document.querySelector(".result-card");
 const instructionCard = document.querySelector(".instruction-card");
 const turnText = document.querySelector(".turn-text");
 const resultText = document.querySelector(".result-text");
-const instructionText = document.querySelector(".instruction-text");
 
 const startForm = document.querySelector(".startCard");
 startForm.addEventListener("click", (e) => {
@@ -113,53 +114,27 @@ footer.addEventListener("click", (e) => {
   if (
     e.target === switchBtn &&
     (gameState.turn === "Player 1 place ships" ||
-      gameState.turn === "Player 2 place ships")
-  ) {
-    if (
-      (gameState.turn = "Player 1 place ships") &&
-      firstPlayer.gameboard.allShipsPlaced()
-    ) {
-      gameState.turn = "Player 2 place ships";
-      instructionText.textContent = `${firstPlayer.name}, leave the screen. ${secondPlayer.name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
-    }
-    if (
-      (gameState.turn = "Player 2 place ships") &&
-      secondPlayer.gameboard.allShipsPlaced()
-    ) {
-      gameState.turn = "Display 2-1";
-      instructionCard.style.display = "none";
-      turnCard.style.display = "block";
-      resultCard.style.display = "block";
-    }
-    renderBoard(player1Board, firstPlayer, false, false);
-    renderBoard(player2Board, secondPlayer, false, false);
-  }
-  if (
-    e.target === switchBtn &&
-    (gameState.turn === "Switch 1-2" || gameState.turn === "Switch 2-1")
+      gameState.turn === "Player 2 place ships" ||
+      gameState.turn === "Switch 1-2" ||
+      gameState.turn === "Switch 2-1")
   ) {
     renderBoard(player1Board, firstPlayer, false, false);
     renderBoard(player2Board, secondPlayer, false, false);
-    gameState.turn =
-      gameState.turn === "Switch 1-2" ? "Display 1-2" : "Display 2-1";
+    handleSwitch(gameState, firstPlayer, secondPlayer);
   }
+
   if (e.target === displayBtn) {
-    if (gameState.turn === "Display 1-2") {
-      renderBoard(player1Board, firstPlayer, true, false);
-      renderBoard(player2Board, secondPlayer, false, true);
-      gameState.turn = "Player 2 Turn";
-      resultText.textContent = "Planning next attack";
-      console.log("after click", gameState.turn);
-    }
-    if (gameState.turn === "Display 2-1") {
-      renderBoard(player1Board, firstPlayer, false, true);
-      renderBoard(player2Board, secondPlayer, true, false);
-      gameState.turn = "Player 1 Turn";
-      resultText.textContent = "Planning next attack";
-      console.log("after click", gameState.turn);
-    }
+    handleDisplay(
+      gameState,
+      firstPlayer,
+      secondPlayer,
+      player1Board,
+      player2Board
+    );
   }
+
   turnText.textContent = gameState.turn;
+
   if (e.target === restartBtn) {
     instructionCard.style.display = "block";
     turnCard.style.display = "none";
