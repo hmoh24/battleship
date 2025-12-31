@@ -104,7 +104,17 @@ class Gameboard {
   }
 
   get previousAttacks() {
-    return [...this.#previousAttacks].join("-").toString();
+    return this.#previousAttacks;
+  }
+
+  randomAttack() {
+    let randomX = Math.floor(Math.random() * 10);
+    let randomY = Math.floor(Math.random() * 10);
+    while (this.#previousAttacks.has([randomX, randomY].toString())) {
+      randomX = Math.floor(Math.random() * 10);
+      randomY = Math.floor(Math.random() * 10);
+    }
+    return this.receiveAttack([randomX, randomY]);
   }
 
   allShipsSunk() {
@@ -253,9 +263,3 @@ class Gameboard {
 }
 
 export default Gameboard;
-
-//data structure of 0,1,etc. 2d array
-//this method is good because lookup is 0[1]
-
-//simple method best for first pass, get it working
-const board = new Gameboard();

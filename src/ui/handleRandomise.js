@@ -1,5 +1,21 @@
 import Ship from "../logic/ship.js";
 import renderBoard from "./renderBoard.js";
+
+function randomiseLogic(player) {
+  player.resetGameboard();
+  const ships = [
+    new Ship("Carrier"),
+    new Ship("Battleship"),
+    new Ship("Cruiser"),
+    new Ship("Submarine"),
+    new Ship("Destroyer"),
+  ];
+  ships.forEach((ship) => {
+    const coords = player.gameboard.randomiseCoordinates(ship);
+    player.gameboard.place(ship, coords);
+  });
+}
+
 function handleRandomise(
   player1,
   playerboard1,
@@ -17,20 +33,9 @@ function handleRandomise(
       gamestate === "Player 1 place ships"
         ? [player1, playerboard1]
         : [player2, playerboard2];
-    player.resetGameboard();
-    const ships = [
-      new Ship("Carrier"),
-      new Ship("Battleship"),
-      new Ship("Cruiser"),
-      new Ship("Submarine"),
-      new Ship("Destroyer"),
-    ];
-    ships.forEach((ship) => {
-      const coords = player.gameboard.randomiseCoordinates(ship);
-      player.gameboard.place(ship, coords);
-    });
-    renderBoard(board, player, true, true);
+    randomiseLogic(player);
+    renderBoard(board, player, false, true);
   }
 }
 
-export { handleRandomise };
+export { handleRandomise, randomiseLogic };

@@ -33,7 +33,11 @@ function startFormUIUpdate(player1, player2) {
   boardPage.style.display = "block";
   turnCard.style.display = "none";
   resultCard.style.display = "none";
-  instructionText.textContent = `${player2.name}, leave the screen. ${player1.name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
+  let additionalText =
+    player2.type === "Computer"
+      ? ""
+      : `${player2.name}, leave the screen. ${player1.name} -`;
+  instructionText.textContent = `${additionalText} Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
 }
 
 export { buttonSwitch, createPlayers, startFormUIUpdate };

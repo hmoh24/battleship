@@ -2,11 +2,25 @@ const turnCard = document.querySelector(".turn-card");
 const resultCard = document.querySelector(".result-card");
 const instructionCard = document.querySelector(".instruction-card");
 const instructionText = document.querySelector(".instruction-text");
+const resultText = document.querySelector(".result-text");
 
 function handleSwitch(gamestate, player1, player2) {
+  console.log(gamestate);
+  if (
+    player2.type === "Computer" &&
+    gamestate.turn === "Player 1 place ships" &&
+    player1.gameboard.allShipsPlaced() === true
+  ) {
+    gamestate.turn = "Display 2-1";
+    instructionCard.style.display = "none";
+    turnCard.style.display = "block";
+    resultCard.style.display = "block";
+    resultText.textContent = "Click display to start your turn.";
+  }
   if (
     gamestate.turn === "Player 1 place ships" &&
-    player1.gameboard.allShipsPlaced()
+    player1.gameboard.allShipsPlaced() &&
+    player2.type === "Human"
   ) {
     gamestate.turn = "Player 2 place ships";
     instructionText.textContent = `${player1.name}, leave the screen. ${player2.name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;

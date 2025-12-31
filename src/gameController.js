@@ -6,7 +6,7 @@ import {
 } from "./ui/startForm.js";
 import { generateGrid } from "./ui/board.js";
 import { handlePlaceShip } from "./ui/handleShipPlace.js";
-import { handleRandomise } from "./ui/handleRandomise.js";
+import { handleRandomise, randomiseLogic } from "./ui/handleRandomise.js";
 import { handleBoardClick } from "./ui/handleBoardClick.js";
 import { handleSwitch } from "./ui/handleSwitch.js";
 import { handleDisplay } from "./ui/handleDisplay.js";
@@ -72,13 +72,21 @@ instructionForm.addEventListener("submit", (e) => {
 });
 
 boardContainer.addEventListener("click", (e) => {
+  if (gameState.state === "Computer") return;
   if (gameState.turn === "Player 1 Turn") {
     if (
       e.target.closest(".board") === player2Board &&
       e.target.classList.contains("gridSquare")
     ) {
       console.log("clicked");
-      handleBoardClick(e, firstPlayer, secondPlayer, player2Board, gameState);
+      handleBoardClick(
+        e,
+        firstPlayer,
+        player1Board,
+        secondPlayer,
+        player2Board,
+        gameState
+      );
     }
   } else if (gameState.turn === "Player 2 Turn") {
     if (
@@ -107,6 +115,15 @@ footer.addEventListener("click", (e) => {
     renderBoard(player1Board, firstPlayer, false, false);
     renderBoard(player2Board, secondPlayer, false, false);
     handleSwitch(gameState, firstPlayer, secondPlayer);
+    // if (secondPlayer.type === "Computer") {
+    //   handleRandomise(
+    //     firstPlayer,
+    //     player1Board,
+    //     secondPlayer,
+    //     player2Board,
+    //     "Player 2 place ships"
+    //   );
+    // }
   }
 
   if (e.target === displayBtn) {
@@ -117,6 +134,8 @@ footer.addEventListener("click", (e) => {
       player1Board,
       player2Board
     );
+    if (secondPlayer.gameboard.allShipsPlaced() === false)
+      randomiseLogic(secondPlayer);
   }
 
   if (e.target === restartBtn) {

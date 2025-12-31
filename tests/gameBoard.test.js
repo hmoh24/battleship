@@ -222,6 +222,28 @@ describe("Gameboard", () => {
       }).toThrow("Cannot make an attack on the previously hit tile.");
     });
 
+    test("randomAttack retries until it finds a valid square", () => {
+      jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.12)
+        .mockReturnValueOnce(0.34);
+
+      board.randomAttack();
+
+      const before = board.previousAttacks.size;
+      const randSpy = jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.12)
+        .mockReturnValueOnce(0.34)
+        .mockReturnValueOnce(0.22)
+        .mockReturnValueOnce(0.45);
+
+      expect(() => board.randomAttack()).not.toThrow();
+      expect(board.previousAttacks.size).toBe(before + 1);
+
+      randSpy.mockRestore();
+    });
+
     test("Attack on tile with ship returns string message", () => {
       const destroyer = new Ship("Destroyer");
       board.place(destroyer, [
@@ -245,8 +267,7 @@ describe("Gameboard", () => {
     test("Get coordinates of all attacks", () => {
       board.receiveAttack([6, 5]);
       board.receiveAttack([5, 3]);
-
-      expect(board.previousAttacks).toBe("6,5-5,3");
+      expect(board.previousAttacks).toEqual(new Set(["6,5", "5,3"]));
     });
   });
 
@@ -533,6 +554,49 @@ describe("Gameboard", () => {
       ).toThrow(
         "Cannot replace a ship that has not been placed yet, use place instead."
       );
+    });
+  });
+
+  describe("randomAttack", () => {
+    let carrier;
+    let battleship;
+    let cruiser;
+    let submarine;
+    let destroyer;
+
+    beforeEach(() => {
+      board = new Gameboard();
+      carrier = new Ship("Carrier");
+      battleship = new Ship("Battleship");
+      cruiser = new Ship("Cruiser");
+      submarine = new Ship("Submarine");
+      destroyer = new Ship("Destroyer");
+    });
+
+    test("randomAttack on empty coord return valid string", () => {
+      expect(board.randomAttack()).toBe("Missed!");
+    });
+
+    test("randomAttack retries until it finds a valid square", () => {
+      // First attack lands on (1,3)
+      jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.12)
+        .mockReturnValueOnce(0.34);
+
+      board.randomAttack();
+
+      // Next randomAttack: first attempt repeats (1,3), then tries (2,4)
+      const randSpy = jest
+        .spyOn(Math, "random")
+        .mockReturnValueOnce(0.12) // repeat x
+        .mockReturnValueOnce(0.34) // repeat y
+        .mockReturnValueOnce(0.22) // new x
+        .mockReturnValueOnce(0.45); // new y
+
+      expect(() => board.randomAttack()).not.toThrow();
+
+      randSpy.mockRestore();
     });
   });
 });
