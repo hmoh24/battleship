@@ -92,7 +92,14 @@ boardContainer.addEventListener("click", (e) => {
       e.target.closest(".board") === player1Board &&
       e.target.classList.contains("gridSquare")
     ) {
-      handleBoardClick(e, secondPlayer, firstPlayer, player1Board, gameState);
+      handleBoardClick(
+        e,
+        secondPlayer,
+        player2Board,
+        firstPlayer,
+        player1Board,
+        gameState
+      );
     }
   }
   turnText.textContent = gameState.turn;
