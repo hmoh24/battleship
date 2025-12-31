@@ -119,6 +119,10 @@ class Gameboard {
     return this.#shipsPlaced.size === 5;
   }
 
+  hasShip(shipName) {
+    return this.#shipsPlaced.has(shipName);
+  }
+
   get boardMatrix() {
     return this.#coordinatesMatrix.flat();
   }
@@ -232,7 +236,6 @@ class Gameboard {
     // console.log("shipcode: ", shipCode);
     // console.log("old coords: ", oldCoords);
     oldCoords.forEach(([x, y]) => {
-      console.log("code at old coords: ", this.#coordinatesMatrix[y][x]);
       if (shipCode === this.#coordinatesMatrix[y][x]) {
         this.#coordinatesMatrix[y][x] = 0;
       } else

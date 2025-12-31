@@ -440,6 +440,19 @@ describe("Gameboard", () => {
       });
     });
   });
+
+  describe("hasShip", () => {
+    test("returns false when a ship has not been placed and true after placement", () => {
+      const destroyer = new Ship("Destroyer");
+      expect(board.hasShip(destroyer.name)).toBe(false);
+      board.place(destroyer, [
+        [0, 0],
+        [1, 0],
+      ]);
+      expect(board.hasShip(destroyer.name)).toBe(true);
+    });
+  });
+
   describe("replace", () => {
     let carrier;
     let battleship;

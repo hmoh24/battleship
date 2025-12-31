@@ -13,6 +13,7 @@ function handlePlaceShip(
   gameState
 ) {
   e.preventDefault();
+
   const shipType = shipSelect.value;
   if (!shipType || shipType === "none") {
     alert("Select a ship type before submitting.");
@@ -34,8 +35,13 @@ function handlePlaceShip(
     gameState === "Player 1 place ships"
       ? [player1, playerBoard1]
       : [player2, playerBoard2];
+
   const ship = new Ship(shipType);
-  player.gameboard.replace(ship, coords);
+
+  player.gameboard.hasShip(shipType)
+    ? player.gameboard.replace(ship, coords)
+    : player.gameboard.place(ship, coords);
+
   renderBoard(board, player, false, true);
 }
 
