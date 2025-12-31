@@ -48,7 +48,6 @@ class Gameboard {
   }
 
   place(ship, coordinatesArray) {
-    //can instantiate ships here if necessary instead of passing them in
     if (
       coordinatesArray.some((coordinate) => {
         return !Gameboard.#coordinateWithinBounds(coordinate);
@@ -105,7 +104,6 @@ class Gameboard {
   }
 
   get previousAttacks() {
-    //store the array, make comparison with .tostring, so that on the DOM we can use it to highlight the right tiles.
     return [...this.#previousAttacks].join("-").toString();
   }
 

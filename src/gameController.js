@@ -1,6 +1,5 @@
 import Ship from "./logic/ship.js";
 import Gameboard from "./logic/gameBoard.js";
-import Player from "./logic/player.js";
 import renderBoard from "./ui/renderBoard.js";
 import {
   buttonSwitch,
@@ -8,19 +7,13 @@ import {
   startFormUIUpdate,
 } from "./ui/startForm.js";
 import { generateGrid } from "./ui/board.js";
-
+import { handlePlaceShip } from "./ui/handleShipPlace.js";
+import { handleRandomise } from "./ui/handleRandomise.js";
+console.log("Game controller run");
 let firstPlayer;
 let secondPlayer;
 let gameState = "Start";
 
-const startForm = document.querySelector(".startCard");
-const player1NameInput = startForm.querySelector("#player1Name");
-const player2NameInput = startForm.querySelector("#player2Name");
-const instructionForm = document.querySelector(".instruction-card");
-const shipSelect = instructionForm.querySelector("#shipSelect");
-const shipCoordsInput = instructionForm.querySelector("#shipCoords");
-// Set selected option: shipSelect.value = "Carrier"
-console.log(startForm);
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
 const player1BoardTitle = player1Board
@@ -39,20 +32,18 @@ const turnText = document.querySelector(".turn-text");
 const resultText = document.querySelector(".result-text");
 const instructionText = document.querySelector(".instruction-text");
 
+const startForm = document.querySelector(".startCard");
 startForm.addEventListener("click", (e) => {
   buttonSwitch(e);
 });
 
 startForm.addEventListener("submit", (e) => {
-  console.log(startForm);
   e.preventDefault();
   if (gameState !== "Start") {
     alert("Game state is incorrect for this function, refresh to fix.");
   } else {
     try {
-      console.log("x");
       [firstPlayer, secondPlayer] = createPlayers();
-      console.log(firstPlayer, secondPlayer);
       startFormUIUpdate(firstPlayer, secondPlayer);
       gameState = "Player 1 place ships";
     } catch (error) {
@@ -65,63 +56,26 @@ generateGrid(boardElements);
 
 const randomiseBtn = document.querySelector('[data-action="randomise"]');
 randomiseBtn.addEventListener("click", () => {
-  //check for valid game states
-  let player;
-  let board;
-  if (
-    gameState === "Player 1 place ships" ||
-    gameState === "Player 2 place ships"
-  ) {
-    [player, board] =
-      gameState === "Player 1 place ships"
-        ? [firstPlayer, player1Board]
-        : [secondPlayer, player2Board];
-    player.resetGameboard();
-    const ships = [
-      new Ship("Carrier"),
-      new Ship("Battleship"),
-      new Ship("Cruiser"),
-      new Ship("Submarine"),
-      new Ship("Destroyer"),
-    ];
-    ships.forEach((ship) => {
-      const coords = player.gameboard.randomiseCoordinates(ship);
-      player.gameboard.place(ship, coords);
-    });
-    renderBoard(board, player, true, true);
-  }
+  handleRandomise(
+    firstPlayer,
+    player1Board,
+    secondPlayer,
+    player2Board,
+    gameState
+  );
 });
 
-//fix with game state
-//check for game state for both in one if block, then ternary to assign right variable for player 1 vs 2
+const instructionForm = document.querySelector(".instruction-card");
 instructionForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const shipType = shipSelect.value;
-  if (!shipType || shipType === "none") {
-    alert("Select a ship type before submitting.");
-    return;
-  }
-
-  const coordMatches = shipCoordsInput.value.match(/-?\d+/g);
-  if (!coordMatches || coordMatches.length % 2 !== 0) {
-    alert("Invalid coordinates. Example: [0, 6], [0, 7]");
-    return;
-  }
-
-  const coords = [];
-  for (let i = 0; i < coordMatches.length; i += 2) {
-    coords.push([Number(coordMatches[i]), Number(coordMatches[i + 1])]);
-  }
-
-  let [player, board] =
-    gameState === "Player 1 place ships"
-      ? [firstPlayer, player1Board]
-      : [secondPlayer, player2Board];
-
   try {
-    const ship = new Ship(shipType);
-    player.gameboard.replace(ship, coords);
-    renderBoard(board, player, false, true);
+    handlePlaceShip(
+      e,
+      firstPlayer,
+      player1Board,
+      secondPlayer,
+      player2Board,
+      gameState
+    );
   } catch (err) {
     alert(err.message);
   }
