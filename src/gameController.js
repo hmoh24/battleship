@@ -1,5 +1,3 @@
-import Ship from "./logic/ship.js";
-import Gameboard from "./logic/gameBoard.js";
 import renderBoard from "./ui/renderBoard.js";
 import {
   buttonSwitch,
@@ -9,19 +7,15 @@ import {
 import { generateGrid } from "./ui/board.js";
 import { handlePlaceShip } from "./ui/handleShipPlace.js";
 import { handleRandomise } from "./ui/handleRandomise.js";
+import { handleBoardClick } from "./ui/handleBoardClick.js";
 console.log("Game controller run");
+
 let firstPlayer;
 let secondPlayer;
-let gameState = "Start";
+let gameState = { turn: "Start" };
 
 const boardElements = [...document.getElementsByClassName("board")];
 const [player1Board, player2Board] = boardElements;
-const player1BoardTitle = player1Board
-  .closest(".board-shell")
-  .querySelector("h3");
-const player2BoardTitle = player1Board
-  .closest(".board-shell")
-  .querySelector("h3");
 const boardContainer = document.getElementsByClassName("boards")[0];
 
 //info section
@@ -39,13 +33,13 @@ startForm.addEventListener("click", (e) => {
 
 startForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  if (gameState !== "Start") {
+  if (gameState.turn !== "Start") {
     alert("Game state is incorrect for this function, refresh to fix.");
   } else {
     try {
       [firstPlayer, secondPlayer] = createPlayers();
       startFormUIUpdate(firstPlayer, secondPlayer);
-      gameState = "Player 1 place ships";
+      gameState.turn = "Player 1 place ships";
     } catch (error) {
       alert(error.message);
     }
@@ -61,7 +55,7 @@ randomiseBtn.addEventListener("click", () => {
     player1Board,
     secondPlayer,
     player2Board,
-    gameState
+    gameState.turn
   );
 });
 
@@ -74,7 +68,7 @@ instructionForm.addEventListener("submit", (e) => {
       player1Board,
       secondPlayer,
       player2Board,
-      gameState
+      gameState.turn
     );
   } catch (err) {
     alert(err.message);
@@ -91,57 +85,23 @@ instructionForm.addEventListener("submit", (e) => {
 //   },
 // };
 boardContainer.addEventListener("click", (e) => {
-  console.log("State: ", gameState);
-
-  if (gameState === "Player 1 Turn") {
+  if (gameState.turn === "Player 1 Turn") {
     if (
       e.target.closest(".board") === player2Board &&
       e.target.classList.contains("gridSquare")
     ) {
-      const coordStringArray = e.target.dataset["coord"].split("");
-      const coordNumericArray = coordStringArray.map(Number);
-      let resultString =
-        secondPlayer.gameboard.receiveAttack(coordNumericArray);
-      console.log(resultString);
-      resultText.textContent = resultString;
-      if (resultString === "Missed!") {
-        renderBoard(player2Board, secondPlayer, false, false);
-        gameState = "Switch 1-2";
-      } else {
-        renderBoard(player2Board, secondPlayer, true, false);
-        if (secondPlayer.gameboard.allShipsSunk()) {
-          alert(`${firstPlayer.name} wins!!`);
-          gameState = "Player 1 Win!";
-          turnText.textContent = gameState;
-          renderBoard(player2Board, secondPlayer, false, false);
-        }
-      }
+      console.log("clicked");
+      handleBoardClick(e, firstPlayer, secondPlayer, player2Board, gameState);
     }
-  } else if (gameState === "Player 2 Turn") {
+  } else if (gameState.turn === "Player 2 Turn") {
     if (
       e.target.closest(".board") === player1Board &&
       e.target.classList.contains("gridSquare")
     ) {
-      const coordStringArray = e.target.dataset["coord"].split("");
-      const coordNumericArray = coordStringArray.map(Number);
-      let resultString = firstPlayer.gameboard.receiveAttack(coordNumericArray);
-      console.log(resultString);
-      resultText.textContent = resultString;
-      if (resultString === "Missed!") {
-        renderBoard(player1Board, firstPlayer, false, false);
-        gameState = "Switch 2-1";
-      } else {
-        renderBoard(player1Board, firstPlayer, true, false);
-        if (firstPlayer.gameboard.allShipsSunk()) {
-          alert(`${secondPlayer.name} wins!!`);
-          gameState = "Player 2 Win!";
-          turnText.textContent = gameState;
-          renderBoard(player1Board, firstPlayer, false, false);
-        }
-      }
+      handleBoardClick(e, secondPlayer, firstPlayer, player1Board, gameState);
     }
   }
-  turnText.textContent = gameState;
+  turnText.textContent = gameState.turn;
 });
 
 const footer = document.getElementsByClassName("footer")[0];
@@ -152,21 +112,21 @@ footer.addEventListener("click", (e) => {
   console.log("State: ", gameState);
   if (
     e.target === switchBtn &&
-    (gameState === "Player 1 place ships" ||
-      gameState === "Player 2 place ships")
+    (gameState.turn === "Player 1 place ships" ||
+      gameState.turn === "Player 2 place ships")
   ) {
     if (
-      (gameState = "Player 1 place ships") &&
+      (gameState.turn = "Player 1 place ships") &&
       firstPlayer.gameboard.allShipsPlaced()
     ) {
-      gameState = "Player 2 place ships";
+      gameState.turn = "Player 2 place ships";
       instructionText.textContent = `${firstPlayer.name}, leave the screen. ${secondPlayer.name} - Place ships by: using the randomiser, or placing via the input below. Any placed ships can be moved by selecting them from the dropdown below and placing valid coordinates. [0, 0] is the top left, and [9, 9] is the bottom right.`;
     }
     if (
-      (gameState = "Player 2 place ships") &&
+      (gameState.turn = "Player 2 place ships") &&
       secondPlayer.gameboard.allShipsPlaced()
     ) {
-      gameState = "Display 2-1";
+      gameState.turn = "Display 2-1";
       instructionCard.style.display = "none";
       turnCard.style.display = "block";
       resultCard.style.display = "block";
@@ -176,35 +136,36 @@ footer.addEventListener("click", (e) => {
   }
   if (
     e.target === switchBtn &&
-    (gameState === "Switch 1-2" || gameState === "Switch 2-1")
+    (gameState.turn === "Switch 1-2" || gameState.turn === "Switch 2-1")
   ) {
     renderBoard(player1Board, firstPlayer, false, false);
     renderBoard(player2Board, secondPlayer, false, false);
-    gameState = gameState === "Switch 1-2" ? "Display 1-2" : "Display 2-1";
+    gameState.turn =
+      gameState.turn === "Switch 1-2" ? "Display 1-2" : "Display 2-1";
   }
   if (e.target === displayBtn) {
-    if (gameState === "Display 1-2") {
+    if (gameState.turn === "Display 1-2") {
       renderBoard(player1Board, firstPlayer, true, false);
       renderBoard(player2Board, secondPlayer, false, true);
-      gameState = "Player 2 Turn";
+      gameState.turn = "Player 2 Turn";
       resultText.textContent = "Planning next attack";
-      console.log("after click", gameState);
+      console.log("after click", gameState.turn);
     }
-    if (gameState === "Display 2-1") {
+    if (gameState.turn === "Display 2-1") {
       renderBoard(player1Board, firstPlayer, false, true);
       renderBoard(player2Board, secondPlayer, true, false);
-      gameState = "Player 1 Turn";
+      gameState.turn = "Player 1 Turn";
       resultText.textContent = "Planning next attack";
-      console.log("after click", gameState);
+      console.log("after click", gameState.turn);
     }
   }
-  turnText.textContent = gameState;
+  turnText.textContent = gameState.turn;
   if (e.target === restartBtn) {
     instructionCard.style.display = "block";
     turnCard.style.display = "none";
     resultCard.style.display = "none";
     resultText.textContent = "Planning next attack";
-    gameState = "Player 1 place ships";
+    gameState.turn = "Player 1 place ships";
     firstPlayer.resetGameboard();
     secondPlayer.resetGameboard();
     renderBoard(player1Board, firstPlayer, false, true);
